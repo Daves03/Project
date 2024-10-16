@@ -1,0 +1,149 @@
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+  
+  .auth-box {
+    width: 90%; 
+    max-width: 400px; 
+    padding: 40px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+  
+  .auth-box h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  .auth-box h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: 700;
+  }
+  
+  .auth-box form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .auth-box input {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .auth-box button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: 500;
+  }
+  
+  .auth-box button:hover {
+    background-color: #45a049;
+  }
+  
+  .auth-box p {
+    margin-top: 10px;
+    color: #666;
+  }
+  
+  .auth-box p button {
+    background: none;
+    border: none;
+    color: #4caf50;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 1em;
+  }
+  
+  .verification-code-container {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 15px;
+  }
+  
+  .verification-code-container input {
+    flex: 1;
+    margin-right: 10px;
+    padding: 10px; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .verification-code-container button {
+    padding: 10px 15px; 
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: 500;
+    height: 38px; 
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    margin-top: 0; 
+  }
+  
+  .verification-code-container button:hover {
+    background-color: #45a049;
+  }
+  
+  @media (max-width: 480px) {
+    .auth-box {
+      padding: 20px;
+    }
+  
+    .auth-box h2 {
+      font-size: 1.5rem; 
+    }
+  
+    .auth-box input,
+    .auth-box button {
+      font-size: 14px; 
+      padding: 8px; 
+    }
+  }
+  
