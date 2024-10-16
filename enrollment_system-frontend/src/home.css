@@ -88,14 +88,11 @@
     color: #851f1f;
 }
 
-.main-content {
-    flex: 1;
-    padding: 20px;
-    margin-top: 60px;
-}
+
 
 .main-content h1 {
     margin-top: 10px; 
+    margin-left: 10px;
 }
 
 .hamburger {
