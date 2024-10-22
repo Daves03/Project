@@ -2,22 +2,30 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../studentViewCss/home.css';
 import { useState, useEffect } from 'react';
-import logoutIcon from '../assets/logout.png'; // Import the logout icon
-import MainContent from './maincontents'; // Import the MainContent component
+import logoutIcon from '../assets/logout.png'; 
+import MainContent from './maincontents'; 
 
 const Home = () => {
   const navigate = useNavigate();
-  const [activeLink, setActiveLink] = useState('dashboard'); // State to manage the active link
-  const [isSidebarOpen, setSidebarOpen] = useState(false); // State to manage sidebar visibility
+  const [activeLink, setActiveLink] = useState('dashboard'); 
+  const [isSidebarOpen, setSidebarOpen] = useState(false); 
 
   const handleLogout = async () => {
-    try {
-      await axios.post('http://localhost:8000/api/logout');
-      navigate('/'); // Redirect to the login page after logout
-    } catch (error) {
-      console.error('Logout failed:', error);
+    const isConfirmed = window.confirm('Are you sure you want to log out?');
+    if (!isConfirmed) {
+      return; 
     }
-  };
+    try {
+        await axios.post('http://localhost:8000/api/logout', {}, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
+        });
+        navigate('/'); 
+    } catch (error) {
+        console.error('Logout failed:', error);
+    }
+};
 
   useEffect(() => {
     setActiveLink('profile'); // Set active link to dashboard on component mount
