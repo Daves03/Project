@@ -1,8 +1,8 @@
 // src/MainContent.jsx
 import React, { useState } from 'react';
-import './css/profile.css';
-import './css/checklist.css';
-import './css/enroll.css';
+import '../studentViewCss/profile.css';
+import '../studentViewCss/checklist.css';
+import '../studentViewCss/enroll.css';
 
 const MainContent = ({ activeLink }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -57,7 +57,7 @@ const MainContent = ({ activeLink }) => {
   };
 
   const handleSubmit = () => {
-    const requiredFieldsStep3 = ['course', 'yearLevel'];
+    const requiredFieldsStep3 = ['houseNumber' , 'street' , 'subdivision' , 'barangay' , 'municipality' , 'zipCode'];
     const isStep3Valid = requiredFieldsStep3.every((field) => formData[field].trim() !== '');
     if (isStep3Valid) {
       alert('Form Submitted Successfully!');
@@ -187,9 +187,9 @@ const MainContent = ({ activeLink }) => {
         <div>
           {/* Step Indicator */}
           <div className="step-indicator">
-            <span className={currentStep === 1 ? 'active-step' : ''}>Step 1</span>
-            <span className={currentStep === 2 ? 'active-step' : ''}>Step 2</span>
-            <span className={currentStep === 3 ? 'active-step' : ''}>Step 3</span>
+            <span className={currentStep === 1 ? 'active-step' : ''}></span>
+            <span className={currentStep === 2 ? 'active-step' : ''}></span>
+            <span className={currentStep === 3 ? 'active-step' : ''}></span>
           </div>
 
           {/* Step 1: Basic Info */}
@@ -296,10 +296,11 @@ const MainContent = ({ activeLink }) => {
                   onChange={handleChange}
                   required
                 />
-
-                <button type="button" onClick={handleNextStep}>
-                  Next Step
-                </button>
+                <div className='buttons-next'>
+                  <button type="button" onClick={handleNextStep}>
+                    Next Step
+                  </button>
+                </div>
               </form>
             </div>
           )}
@@ -382,13 +383,14 @@ const MainContent = ({ activeLink }) => {
                   <option value="transferee">Transferee THIS YEAR</option>
 
                 </select>
-
-                <button type="button" onClick={handlePreviousStep}>
-                  Previous Step
-                </button>
-                <button type="button" onClick={handleNextStep}>
-                  Next Step
-                </button>
+                <div className='buttons-nextForm'>
+                  <button type="button" onClick={handlePreviousStep}>
+                    Previous Step
+                  </button>
+                  <button type="button" onClick={handleNextStep}>
+                    Next Step
+                  </button>
+                </div>
               </form>
             </div>
           )}
@@ -397,11 +399,11 @@ const MainContent = ({ activeLink }) => {
           {currentStep === 3 && (
             <div className="enroll-step">
               <form className="enroll-form">
-                <label htmlFor="housenumber">House No./Lot/Blk.</label>
+                <label htmlFor="houseNumber">House No./Lot/Blk.</label>
                   <input
                     type="text"
                     id="housenumber"
-                    name="housenumber"
+                    name="houseNumber"
                     className="inputEnroll"
                     value={formData.housenumber}
                     onChange={handleChange}
@@ -436,10 +438,11 @@ const MainContent = ({ activeLink }) => {
                     id="barangay"
                     name="barangay"
                     className="inputEnroll"
-                    value={formData.barangay}
+                    value={formData.barangay}   
                     onChange={handleChange}
                     required
-                  />
+                  />  
+
 
                 <label htmlFor="city">Municipality / City</label>
                   <input
@@ -463,13 +466,14 @@ const MainContent = ({ activeLink }) => {
                     required
                   />
 
-
-                <button type="button" onClick={handlePreviousStep}>
-                  Previous Step
-                </button>
-                <button type="button" onClick={handleSubmit}>
-                  Submit
-                </button>
+                <div className='buttons-nextForm'>
+                  <button type="button" onClick={handlePreviousStep}>
+                    Previous Step
+                  </button>
+                  <button type="button" onClick={handleSubmit}>
+                    Submit
+                  </button>
+                </div>
               </form>
             </div>
           )}

@@ -6,7 +6,7 @@
   }
   
   @font-face {
-    font-family: 'Montserrat';
+    font-family: 'Montserrat-bold';
     src: url('/fonts/Montserrat-Bold.ttf') format('truetype');
     font-weight: 700;
     font-style: normal;
@@ -77,6 +77,13 @@
     transition: background-color 0.3s;
     font-weight: 500;
   }
+  .loginButtons {
+    width: 100%;
+  }
+  .loginButtons:hover {
+    background-color: #235324;
+    color: white;
+  }
   
   .auth-box button:hover {
     background-color: #45a049;
@@ -110,6 +117,10 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+  }
+
+  .loginButton{
+    align-items: center;
   }
   
   .verification-code-container button {

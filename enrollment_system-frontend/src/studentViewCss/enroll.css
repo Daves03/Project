@@ -1,12 +1,10 @@
-/* General form container */
-
 .enroll-form {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 500px; /* Set fixed height */
+  height: 540px; 
   width: 400px;
-  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -14,6 +12,11 @@
   font-weight: bold;
   margin-bottom: 5px;
   color: #333;
+}
+
+.textButton {
+  justify-content: right;
+  align-items: right;
 }
 
 .inputEnroll {
@@ -38,6 +41,7 @@ button {
   color: white;
   border-radius: 4px;
   cursor: pointer;
+  width: 50%;
 }
 
 button:hover {
@@ -52,12 +56,12 @@ button:hover {
 }
 
 .step-indicator span {
-  padding: 10px;
+  padding: 8px;
   font-weight: bold;
-  border-radius: 50%;
   background-color: #f0f0f0;
   color: #555;
-  width: 60px;
+  width: 100px;
+  border-radius: 4px;
   text-align: center;
   transition: background-color 0.3s, color 0.3s;
 }
@@ -67,30 +71,26 @@ button:hover {
   color: white;
 }
 
-button[type="button"] {
-  margin-top: 10px;
-  padding: 10px 15px;
-  font-size: 16px;
+.buttons-next {
+  display: flex;
+  justify-content: right;
 }
 
-button[type="submit"] {
-  margin-top: 15px;
-  background-color: #008CBA;
-}
+.buttons-nextForm {
+  display: flex;
+  gap: 20px;
 
-button[type="submit"]:hover {
-  background-color: #007bb5;
 }
 
 /* Mobile view */
 @media (max-width: 600px) {
+  
   .step-indicator {
     flex-direction: flex;
     gap: 10px;
   }
 
   .step-indicator span {
-    width: 60px;
-    height: 60px;
+    width: 80px;
   }
 }

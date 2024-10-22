@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './css/home.css'; // Import the CSS for styling
+import '../studentViewCss/home.css';
 import { useState, useEffect } from 'react';
-import logoutIcon from './assets/logout.png'; // Import the logout icon
+import logoutIcon from '../assets/logout.png'; // Import the logout icon
 import MainContent from './maincontents'; // Import the MainContent component
 
 const Home = () => {

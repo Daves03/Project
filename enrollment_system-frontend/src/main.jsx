@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Auth from './auth'; 
-import Home from './home'; 
+import Home from './studentView/home'; 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
-import './css/auth.css';
+import './studentViewCss/auth.css'; // Import the CSS for styling
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -102,10 +102,10 @@ const Auth = () => {
                 Send
               </button>
             </div>
-            <button type="submit">Confirm</button>
+            <button className='loginButtons' type="submit">Confirm</button>
             <p>
               Already have an account?{' '}
-              <button onClick={() => {
+              <button className='login-button'   onClick={() => {
                 setIsForgotPassword(false);
                 setIsLogin(true);
               }}>
@@ -161,12 +161,12 @@ const Auth = () => {
                 </div>
               </>
             )}
-            <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
+            <button className='loginButtons' type="submit">{isLogin ? 'Login' : 'Register'}</button>
             <p>
               {isLogin ? (
                 <>
                   Don't have an account?{' '}
-                  <button onClick={() => {
+                  <button className='textButton' onClick={() => {
                     setIsLogin(false);
                   }}>
                     Register
@@ -182,7 +182,7 @@ const Auth = () => {
               {isLogin && (
                 <>
                   <br />
-                  <button onClick={() => {
+                  <button className='text-forgot' onClick={() => {
                     setIsForgotPassword(true);
                   }}>
                     Forgot Password?
