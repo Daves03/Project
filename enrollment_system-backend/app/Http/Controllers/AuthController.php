@@ -3,17 +3,58 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; 
+use App\Models\User; 
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
+        // Validate the incoming request
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
         $credentials = $request->only('email', 'password');
-        //dummy account
-        if ($credentials['email'] === '123@gmail.com' && $credentials['password'] === '123') {
-            return response()->json(['message' => 'Login successful!'], 200);
+
+        // Attempt to log in with the provided credentials
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user(); 
+
+            // Generate a token for the user
+            $token = $user->createToken('API Token')->plainTextToken;
+
+            // Return a response with the user role and token
+            return response()->json([
+                'message' => 'Login successful!',
+                'role' => $user->role, 
+                'token' => $token
+            ], 200);
         }
 
-        return response()->json(['message' => 'Invalid credentials!'], 401);
+        // Handle invalid credentials
+        throw ValidationException::withMessages([
+            'email' => ['Invalid credentials!'],
+        ]);
     }
+
+    public function logout(Request $request)
+    {
+        $user = Auth::user(); 
+    
+        if ($user) {
+            
+            $user->tokens()->where('id', $request->user()->currentAccessToken()->id)->delete(); 
+    
+            return response()->json(['message' => 'Logout successful!'], 200);
+        }
+    
+        return response()->json(['message' => 'User not authenticated.'], 401);
+    }
+    
+
+
+
 }
