@@ -1,9 +1,9 @@
-// src/Home.jsx
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './home.css'; // Import the CSS for styling
+import './css/home.css'; // Import the CSS for styling
 import { useState, useEffect } from 'react';
 import logoutIcon from './assets/logout.png'; // Import the logout icon
+import MainContent from './maincontents'; // Import the MainContent component
 
 const Home = () => {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    setActiveLink('dashboard'); // Set active link to dashboard on component mount
+    setActiveLink('profile'); // Set active link to dashboard on component mount
   }, []);
 
   const toggleSidebar = () => {
@@ -43,28 +43,17 @@ const Home = () => {
         <ul className={`nav-links ${isSidebarOpen ? 'open' : ''}`}>
           <li>
             <a
-              href="#dashboard"
-              className={activeLink === 'dashboard' ? 'active' : ''}
-              onClick={() => {
-                setActiveLink('dashboard');
-                setSidebarOpen(false); 
-              }}
-            >
-              Dashboard
-            </a>
-          </li>
-          <li>
-            <a
               href="#profile"
               className={activeLink === 'profile' ? 'active' : ''}
               onClick={() => {
                 setActiveLink('profile');
-                setSidebarOpen(false);
+                setSidebarOpen(false); 
               }}
             >
               Profile
             </a>
           </li>
+          
           <li>
             <a
               href="#courses"
@@ -79,10 +68,10 @@ const Home = () => {
           </li>
           <li>
             <a
-              href="#settings"
-              className={activeLink === 'settings' ? 'active' : ''}
+              href="#enroll"
+              className={activeLink === 'enroll' ? 'active' : ''}
               onClick={() => {
-                setActiveLink('settings');
+                setActiveLink('enroll');
                 setSidebarOpen(false);
               }}
             >
@@ -97,9 +86,10 @@ const Home = () => {
           </button>
         </div>
       </nav>
+      
       {/* Main Content */}
       <main className="main-content">
-        <h1>Welcome pareng dhan!</h1>
+        <MainContent activeLink={activeLink} /> {/* Render content based on active link */}
       </main>
     </div>
   );

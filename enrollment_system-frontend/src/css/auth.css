@@ -80,6 +80,7 @@
   
   .auth-box button:hover {
     background-color: #45a049;
+    color: white;
   }
   
   .auth-box p {

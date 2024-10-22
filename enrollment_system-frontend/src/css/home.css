@@ -15,6 +15,7 @@
     top: 0; 
     height: 100vh; 
     overflow-y: auto; 
+    z-index: 1000;
 }
 
 .logo-container {
@@ -46,6 +47,7 @@
     flex-direction: column; 
     align-items: center; 
     width: 100%;
+
 }
 
 .nav-links li {
@@ -60,7 +62,7 @@
     transition: background-color 0.3s, color 0.3s; 
     padding: 10px 15px; 
     width: 100%; 
-    text-align: center; 
+    text-align: left; 
 }
 
 .nav-links a:hover {
@@ -68,8 +70,10 @@
 }
 
 .nav-links a.active {
-    color: white; 
-    background-color: #419e46;
+    color: yellow; 
+    text-align: center;
+    background-color: #3700ff;
+    transition: 0.3s;
 }
 
 .logout-button {
@@ -88,35 +92,33 @@
     color: #851f1f;
 }
 
-
-
-.main-content h1 {
-    margin-top: 10px; 
-    margin-left: 10px;
-}
-
 .hamburger {
     display: none;
     cursor: pointer;
     position: fixed; 
     top: 0; 
     left: 0;
-    width: 50;
+    width: 50px;
     padding: 10px; 
     z-index: 200;
     text-align: center;
     font-size: 30px;
 }
 
+.main-content{
+    overflow-x: hidden;
+}
+
 @media (max-width: 768px) {
     .sidebar {
         position: fixed; 
         top: 0; 
-        width: 414px;
+        width: 46vh;
         left: -430px;
-        height: 900px; 
+        height: 100vh; 
         z-index: 100; 
         transition: left 0.3s ease;
+        
     }
 
     .sidebar.open {
@@ -139,3 +141,5 @@
         margin-top: 60px;
     }
 }
+
+
