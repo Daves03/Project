@@ -1,16 +1,16 @@
 .profile-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%; 
-    max-width: 800px; 
-    margin: 0 auto; 
-  }
+  border: 2px solid #ccc; 
+  border-radius: 8px; 
+  padding: 50px; 
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+  height: 90vh;
+}
   
   .row {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 20px;
   }
   
   .column {
@@ -20,7 +20,7 @@
   
   label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     font-weight: bold;
   }
   
@@ -30,21 +30,14 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     pointer-events: none;
+    margin-bottom: 10px;
   }
   
   input[readonly] {
     background-color: #f3f3f3;
     cursor: not-allowed;
   }
-  
-  .main-content {
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-    min-width: 177vh;
-    padding: 30px;
-    background-color: #ffffff;
-  }
+ 
   
   @media (max-width: 768px) {
     .row {
@@ -52,12 +45,13 @@
     }
     .main-content {
         min-height: 100vh;
-        min-width: 90%;
+        min-width: 100%;
       }
     .profile-form {
       width: 350px;
       align-items: left;
       padding-left: 10px;
+      height: 107vh;
     }
   }
   

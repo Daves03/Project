@@ -1,0 +1,73 @@
+.schedule-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  gap: 40px;
+  display: flex;
+}
+
+.header {
+  background-color: #24b324;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-size: 10px;
+  border-radius: 5px 5px 0 0;
+}
+
+.table-container {
+  border: 1px solid #ddd;
+  border-radius: 0 0 5px 5px;
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ffffff;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+.notification {
+  color: black;
+  background-color: #f4f4f4;
+  text-align: center;
+  border-radius: 5px;
+}
+@media (max-width: 600px) {
+    .header {
+      font-size: 12px;
+      padding: 10px;
+    }
+  
+    table {
+      display: block; 
+      overflow-x: auto;
+      white-space: nowrap; 
+    }
+  
+    th, td {
+      font-size: 10px;
+      padding: 8px;
+    }
+  
+    .notification {
+      font-size: 10px;
+      padding: 8px;
+    }
+  
+    .schedule-container {
+      padding: 5px;
+      flex-direction: column;
+    }
+  }

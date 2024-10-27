@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
-import './studentViewCss/auth.css'; // Import the CSS for styling
+import './css/auth.css'; // Import the CSS for styling
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
