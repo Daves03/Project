@@ -3,7 +3,11 @@ import Enrollment from './EnrollmentContent';
 import Billing from './BillsContent';
 import Curriculum from './CurriculumContent';
 import ClassSchedule from './ClassScheduleContent';
-import '../css/admin.css';
+import '../admin-css/admin.css';
+import enrollmentIcon from './assets-admin/enrollment-icon.png';
+import billingIcon from './assets-admin/billing-icon.png';
+import curriculumIcon from './assets-admin/curriculum-icon.png';
+import classScheduleIcon from './assets-admin/schedule-icon.png';
 
 const AdminPage = () => {
     const [activePage, setActivePage] = useState('enrollment');
@@ -26,13 +30,25 @@ const AdminPage = () => {
     // Sidebar Component
     const Sidebar = () => (
         <div className='sidebar'>
-            <h2>Admin Panel</h2>
+            <h2>Admin</h2>
             <ul className='nav-links'>
-                <li onClick={() => setActivePage('enrollment')}>Enrollment</li>
-                <li onClick={() => setActivePage('billing')}>Billing</li>
-                <li onClick={() => setActivePage('curriculum')}>Curriculum</li>
-                <li onClick={() => setActivePage('classSchedule')}>Class Schedule</li>
-            </ul>
+            <li onClick={() => setActivePage('enrollment')}>
+                <img src={enrollmentIcon} alt="Enrollment" className="nav-icon" />
+                Enrollment
+            </li>
+            <li onClick={() => setActivePage('billing')}>
+                <img src={billingIcon} alt="Billing" className="nav-icon" />
+                Billing
+            </li>
+            <li onClick={() => setActivePage('curriculum')}>
+                <img src={curriculumIcon} alt="Curriculum" className="nav-icon" />
+                Curriculum
+            </li>
+            <li onClick={() => setActivePage('classSchedule')}>
+                <img src={classScheduleIcon} alt="Class Schedule" className="nav-icon" />
+                Class Schedule
+            </li>
+        </ul>
         </div>
     );
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/dashboard.css'; // Import CSS styles
+import '../css/dashboard-student.css'; // Import CSS styles
 
 const Schedule = () => {
   const classes = [

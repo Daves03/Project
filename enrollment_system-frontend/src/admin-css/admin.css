@@ -17,6 +17,24 @@
 
 .nav-links {
     list-style-type: none; 
+    padding: 0;
+}
+
+.nav-links li {
+    display: flex;
+    align-items: center; 
+    padding: 10px;
+    cursor: pointer; 
+}
+
+.nav-icon {
+    width: 20px; 
+    height: 20px;
+    margin-right: 10px; 
+}
+
+.nav-links {
+    list-style-type: none; 
     padding: 0; 
 }
 
@@ -31,7 +49,7 @@
 }
 
 .nav-links li.active {
-    background-color: #ccc; 
+    background-color: #727272; 
     font-weight: bold;
 }
 

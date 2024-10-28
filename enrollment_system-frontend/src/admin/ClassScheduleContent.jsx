@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../css/classschedule.css'; 
+import '../admin-css/classschedule-admin.css';
 
 const ClassSchedule = () => {
-  // State to hold schedule data
   const [schedule, setSchedule] = useState([]);
-
-  // State to hold form inputs (for adding new data)
   const [newSchedule, setNewSchedule] = useState({
     code: '',
     description: '',
@@ -17,13 +14,12 @@ const ClassSchedule = () => {
     room: '',
     teacher: ''
   });
+  const [showModal, setShowModal] = useState(false);
 
-  // Fetch schedule data from backend API on component mount
   useEffect(() => {
     fetchSchedule();
   }, []);
 
-  // Function to fetch schedule data from API
   const fetchSchedule = async () => {
     try {
       const response = await axios.get('http://localhost:8000/api/schedules');
@@ -33,7 +29,6 @@ const ClassSchedule = () => {
     }
   };
 
-  // Handle delete action with API
   const handleDelete = async (code) => {
     try {
       await axios.delete(`http://localhost:8000/api/schedules/${code}`);
@@ -43,13 +38,11 @@ const ClassSchedule = () => {
     }
   };
 
-  // add new sched
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewSchedule((prev) => ({ ...prev, [name]: value }));
   };
 
-  // new sched via api
   const handleAddNew = async () => {
     try {
       const response = await axios.post('http://localhost:8000/api/schedules', newSchedule);
@@ -63,23 +56,27 @@ const ClassSchedule = () => {
         days: '',
         room: '',
         teacher: ''
-      }); // Reset form inputs
+      });
+      setShowModal(false); 
     } catch (error) {
       console.error('Error adding new schedule:', error);
     }
   };
 
+  const openModal = () => setShowModal(true);
+  const closeModal = () => setShowModal(false);
+
   return (
     <div className="class-schedule">
-      <h1>Class Schedule</h1>
-      <p>Manage class schedule</p>
+      <h2 className="header-schedule">
+      Class Schedule
+      </h2>
 
-      {/* Filtering Options */}
       <div className="filters">
         <select className="course-selection">
           <option value="">Course</option>
-          <option value="HRS">Bachelor of Science in Computer Science</option>
-          <option value="HRS">Bachelor of Science in Information Technology</option>
+          <option value="BSCS">Bachelor of Science in Computer Science</option>
+          <option value="BSIT">Bachelor of Science in Information Technology</option>
         </select>
         <select className="section-selection">
           <option value="">Section</option>
@@ -88,22 +85,16 @@ const ClassSchedule = () => {
         <select className="semester-selection">
           <option value="">Semester</option>
           <option value="First Semester">First Semester</option>
-          <option value="First Semester">Second Semester</option>
-          <option value="First Semester">Third Semester</option>
-          <option value="First Semester">Fourth Semester</option>
-
+          <option value="Second Semester">Second Semester</option>
         </select>
         <select className="year-selection">
           <option value="">Year</option>
           <option value="First Year">First Year</option>
-          <option value="First Year">Second Year</option>
-          <option value="First Year">Third Year</option>
-          <option value="First Year">Fourth Year</option>
+          <option value="Second Year">Second Year</option>
         </select>
-        <button className="add-btn" onClick={handleAddNew}>+ Add New</button>
+        <button className="add-btn" onClick={openModal}>Add New</button>
       </div>
 
-      {/* Schedule Table */}
       <table>
         <thead>
           <tr>
@@ -115,7 +106,6 @@ const ClassSchedule = () => {
             <th>Days</th>
             <th>Room</th>
             <th>Teacher</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -129,14 +119,48 @@ const ClassSchedule = () => {
               <td>{item.days}</td>
               <td>{item.room}</td>
               <td>{item.teacher}</td>
-              <td>
-                <button className="edit-btn">✏️</button>
-                <button className="delete-btn" onClick={() => handleDelete(item.code)}>🗑️</button>
-              </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-btn" onClick={closeModal}>✖</button>
+            <h2>Add New Schedule</h2>
+            <div className="modal-form">
+              <div className="form-column">
+                <label>Course Code:</label>
+                <input type="text" name="code" value={newSchedule.code} onChange={handleInputChange} />
+
+                <label>Units:</label>
+                <input type="number" name="units" value={newSchedule.units} onChange={handleInputChange} />
+
+                <label>Start Time:</label>
+                <input type="time" name="startTime" value={newSchedule.startTime} onChange={handleInputChange} />
+
+                <label>Room:</label>
+                <input type="text" name="room" value={newSchedule.room} onChange={handleInputChange} />
+              </div>
+              <div className="form-column">
+                <label>Course Description:</label>
+                <input type="text" name="description" value={newSchedule.description} onChange={handleInputChange} />
+
+                <label>End Time:</label>
+                <input type="time" name="endTime" value={newSchedule.endTime} onChange={handleInputChange} />
+
+                <label>Days:</label>
+                <input type="text" name="days" value={newSchedule.days} onChange={handleInputChange} />
+
+                <label>Teacher:</label>
+                <input type="text" name="teacher" value={newSchedule.teacher} onChange={handleInputChange} />
+              </div>
+            </div>
+            <button className="add-schedule-btn" onClick={handleAddNew}>Add Schedule</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

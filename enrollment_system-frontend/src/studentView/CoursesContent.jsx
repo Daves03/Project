@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/checklist.css';
+import '../css/checklist-student.css';
 
 const Courses = () => {
   return (

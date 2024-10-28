@@ -1,0 +1,51 @@
+.enrollment-container-admin {
+    max-width: 100vh;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px; /* Rounded corners */
+}
+
+h1 {
+    text-align: center;
+    color: #333; /* Darker color for the main title */
+    margin-bottom: 20px;
+}
+
+.enrollment-section {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #ddd; /* Light border for sections */
+    border-radius: 6px; /* Rounded corners for sections */
+    background-color: #fafafa; /* Slightly different background for sections */
+}
+
+h2 {
+    color: #555; /* Slightly lighter color for section titles */
+}
+
+.action-button {
+    margin: 10px 5px;
+    padding: 10px 15px;
+    background-color: #007bff; /* Primary button color */
+    color: white; /* White text */
+    border: none;
+    border-radius: 5px; /* Rounded corners for buttons */
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.action-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+@media (max-width: 600px) {
+    .enrollment-section {
+        padding: 10px;
+    }
+
+    .action-button {
+        width: 100%; /* Full-width buttons on small screens */
+        margin: 5px 0;
+    }
+}

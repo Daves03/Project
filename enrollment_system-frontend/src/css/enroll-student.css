@@ -1,8 +1,7 @@
 .enroll-step {
-  border: 2px solid #ccc; 
+  border: 1px solid #ccc; 
   border-radius: 8px; 
   background-color: #fff; 
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
 }
 
 .enroll-form {
@@ -53,7 +52,7 @@
 .step-indicator span {
   padding: 8px;
   font-weight: bold;
-  background-color: #ffffff;
+  background-color: #a7a7a7;
   color: #ffffff;
   width: 90px;
   border-radius: 4px;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../css/enroll.css';
+import '../css/enroll-student.css';
 import qrcodeImage from '../assets/qrcodeSample.jpg';
 
 const Enroll = () => {

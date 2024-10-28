@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../css/home.css';
+import '../css/home-student.css';
 import { useState, useEffect } from 'react';
 import logoutIcon from '../assets/logout.png';
 import dashboardIcon from '../assets/dashboard.png'; // Add path to profile icon

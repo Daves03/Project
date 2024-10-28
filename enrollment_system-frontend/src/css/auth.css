@@ -1,4 +1,4 @@
-@font-face {
+  @font-face {
     font-family: 'Montserrat';
     src: url('/fonts/Montserrat-Regular.ttf') format('truetype');
     font-weight: 400;
@@ -43,6 +43,10 @@
     margin-bottom: 10px;
   }
   
+  .text-forgot{
+    font-size: 10px;
+  }
+
   .auth-box h3 {
     margin-bottom: 20px;
     color: #333;
@@ -67,7 +71,9 @@
     border-radius: 4px;
   }
   
-  .auth-box button {
+ 
+  .loginButtons {
+    width: 100%;
     padding: 10px;
     background-color: #4caf50;
     color: white;
@@ -77,11 +83,10 @@
     transition: background-color 0.3s;
     font-weight: 500;
   }
-  .loginButtons {
-    width: 100%;
-  }
+
+
   .loginButtons:hover {
-    background-color: #235324;
+    background-color: #183a19;
     color: white;
   }
   
@@ -95,13 +100,20 @@
     color: #666;
   }
   
-  .auth-box p button {
+  .textButton {
     background: none;
     border: none;
     color: #4caf50;
     cursor: pointer;
     text-decoration: underline;
     font-size: 1em;
+  }
+  .text-forgot {
+    color: #4caf50;
+
+    font-size: 10px;
+    background: none;
+    border: none;
   }
   
   .verification-code-container {
