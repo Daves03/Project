@@ -35,12 +35,12 @@
 }
 
 .logo {
-    width: 130px; 
+    width: 100px; 
     margin: 0; 
 }
 
 .nav-links {
-    margin-top: 20px;
+    margin-top: 0px;
     list-style-type: none; 
     padding: 0; 
     display: flex;
@@ -66,9 +66,8 @@
     display: block;
     color: black; 
     text-decoration: none; 
-    font-size: 15px; 
+    font-size: 12px; 
     transition: background-color 0.3s, color 0.3s; 
-    padding: 10px 15px; 
     width: 100%; 
     text-align: left; 
 }
@@ -82,7 +81,8 @@
     color: black; 
     background-color: #ececec;
     transition: 0.3s;
-    font-size: 18px;
+    font-size: 15px;
+    height: 50;
     font-family: 'Montserrat-bold';
 }
 
@@ -94,7 +94,7 @@
     cursor: pointer; 
     transition: color 0.3s; 
     align-self: center; 
-    margin-top: 190px;
+    margin-top: 80px;
     font-size: 24px;
 }
 
