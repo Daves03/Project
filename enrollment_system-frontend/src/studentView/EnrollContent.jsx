@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import '../css/enroll-student.css';
 import qrcodeImage from '../assets/qrcodeSample.jpg';
+import axios from 'axios';
+
 
 const Enroll = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -29,6 +31,8 @@ const Enroll = () => {
     referenceNumber: '',
     amount: '',
   });
+
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -88,10 +92,23 @@ const Enroll = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
-  const handleSubmit = () => {
-    // Submission logic here
-    console.log('Form submitted:', formData);
-    // Optionally reset form or redirect
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/enroll', formData);
+      console.log('Response:', response.data);
+      alert('Enrollment successful!');
+      // Reset form data...
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+          // Log the complete error response for debugging
+          console.error('Validation errors:', error.response.data.errors);
+          setErrors(error.response.data.errors);
+          alert('Please correct the errors highlighted above.');
+      } else {
+          console.error('Error during enrollment:', error);
+          alert('Enrollment failed. Please check your information.');
+      }
+  }
   };
 
   return (
@@ -118,7 +135,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-
+            {errors.email && <span className="error">{errors.email[0]}</span>} {/* Display error here */}
             <label htmlFor="studentNumber">Student Number</label>
             <input
               type="text"
@@ -129,6 +146,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.studentNumber && <span className="error">{errors.studentNumber[0]}</span>} {/* Display error here */}
 
             <label htmlFor="lastName">Last Name</label>
             <input
@@ -140,7 +158,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-
+            {errors.lastName && <span className="error">{errors.lastName[0]}</span>}
             <label htmlFor="firstName">First Name</label>
             <input
               type="text"
@@ -151,6 +169,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.firstName && <span className="error">{errors.firstName[0]}</span>}
 
             <label htmlFor="middleName">Middle Name</label>
             <input
@@ -162,6 +181,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.middleName && <span className="error">{errors.middleName[0]}</span>}
 
             <label htmlFor="sex">Sex</label>
             <select
@@ -176,6 +196,7 @@ const Enroll = () => {
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
+            {errors.sex && <span className="error">{errors.sex[0]}</span>}
 
             <label htmlFor="contactNumber">Contact Number</label>
             <input
@@ -187,6 +208,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.contactNumber && <span className="error">{errors.contactNumber[0]}</span>}
 
             <label htmlFor="facebookLink">Facebook Link</label>
             <input
@@ -197,7 +219,7 @@ const Enroll = () => {
               value={formData.facebookLink}
               onChange={handleChange}
             />
-
+            {errors.facebookLink && <span className="error">{errors.facebookLink[0]}</span>} {/* Display error here */}
             <label htmlFor="birthdate">Birthdate</label>
             <input
               type="date"
@@ -208,6 +230,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.birthdate && <span className="error">{errors.birthdate[0]}</span>}
             <div className='buttons-next'>
               <button className='nextButton' type="button" onClick={handleNextStep}>
                 Next Step
@@ -231,7 +254,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-
+            {errors.guardianName && <span className="error">{errors.guardianName[0]}</span>}
             <label htmlFor="guardianPhone">Guardian's Phone Number</label>
             <input
               type="text"
@@ -242,6 +265,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.guardianPhone && <span className="error">{errors.guardianPhone[0]}</span>}
 
             <label htmlFor="religion">Religion</label>
             <input
@@ -253,6 +277,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.religion && <span className="error">{errors.religion[0]}</span>}
             <label htmlFor="previousSection">Previous Section</label>
             <select
               id="previousSection"
@@ -285,6 +310,7 @@ const Enroll = () => {
               <option value="3-6">3-6</option>
               <option value="3-7">3-7</option>
             </select>
+            {errors.previousSection && <span className="error">{errors.previousSection[0]}</span>}
 
               <div className='buttons-next'>
                 <button className='previousButton' type="button" onClick={handlePreviousStep}>
@@ -312,6 +338,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.houseNumber && <span className="error">{errors.houseNumber[0]}</span>}
 
             <label htmlFor="street">Street</label>
             <input
@@ -323,6 +350,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.street && <span className="error">{errors.street[0]}</span>}
 
             <label htmlFor="subdivision">Subdivision</label>
             <input
@@ -333,6 +361,7 @@ const Enroll = () => {
               value={formData.subdivision}
               onChange={handleChange}
             />
+            {errors.subdivision && <span className="error">{errors.subdivision[0]}</span>}
 
             <label htmlFor="barangay">Barangay</label>
             <input
@@ -344,6 +373,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.barangay && <span className="error">{errors.barangay[0]}</span>}
 
             <label htmlFor="municipality">Municipality</label>
             <input
@@ -355,6 +385,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.municipality && <span className="error">{errors.municipality[0]}</span>}
 
             <label htmlFor="zipCode">Zip Code</label>
             <input
@@ -366,6 +397,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.zipCode && <span className="error">{errors.zipCode[0]}</span>}
 
               <div className='buttons-next'>
                 <button className='previousButton' type="button" onClick={handlePreviousStep}>
@@ -397,6 +429,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.mobileNumber && <span className="error">{errors.mobileNumber[0]}</span>}
 
             <label htmlFor="senderName">Sender's Name</label>
             <input
@@ -408,6 +441,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.senderName && <span className="error">{errors.senderName[0]}</span>}
 
             <label htmlFor="referenceNumber">Reference Number</label>
             <input
@@ -419,6 +453,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.referenceNumber && <span className="error">{errors.referenceNumber[0]}</span>}
 
             <label htmlFor="amount">Amount</label>
             <input
@@ -430,6 +465,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
+            {errors.amount && <span className="error">{errors.amount[0]}</span>}
 
             <div className='buttons-next'>
               <button className='previousButton' type="button" onClick={handlePreviousStep}>

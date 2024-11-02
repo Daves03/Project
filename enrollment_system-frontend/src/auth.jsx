@@ -32,7 +32,7 @@ const Auth = () => {
       // Navigate to the appropriate dashboard based on role
       if (response.data.role === 'admin') {
         console.log('Redirecting to admin dashboard...');
-        navigate('/admin-dashboard'); 
+        navigate('/admin'); 
     } else if (response.data.role === 'student') {
         console.log('Redirecting to student dashboard...');
         navigate('/home'); 

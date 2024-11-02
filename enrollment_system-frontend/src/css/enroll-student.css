@@ -102,6 +102,11 @@
   margin-bottom: 15px;
 }
 
+.error {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 0.25em;
+}
 /* Mobile view */
 @media (max-width: 600px) {
   
