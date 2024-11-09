@@ -1,0 +1,95 @@
+.enrollment-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    padding-left: 130px;
+}
+
+.title {
+    width: 850px;
+    display: flex;
+    color: black;
+    justify-content: center;
+    height: 40px;
+    background-color: #e2e2e2;
+    text-align: center;
+    margin-bottom: 10px;
+    align-items: center;
+    border-radius: 4px 4px 0px 0px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.notification-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.notification-table th,
+.notification-table td {
+    padding: 10px;
+    border: none; 
+}
+
+.notification-table th {
+    background-color: #f2f2f2;
+    text-align: center;
+}
+
+.notification-table tbody tr {
+    border-bottom: 1px solid gray; 
+}
+
+.notification-table td:first-child {
+    text-align: left;
+    padding-right: 50px;
+}
+
+.notification-table td.buttons-cell {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.view-btn,
+.accept-btn,
+.decline-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.view-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.view-btn:hover {
+    background-color: #0056b3;
+}
+
+.accept-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.accept-btn:hover {
+    background-color: #218838;
+}
+
+.decline-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.decline-btn:hover {
+    background-color: #c82333;
+}
+

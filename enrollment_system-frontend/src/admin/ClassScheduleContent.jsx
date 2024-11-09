@@ -92,7 +92,7 @@ const ClassSchedule = () => {
           <option value="First Year">First Year</option>
           <option value="Second Year">Second Year</option>
         </select>
-        <button className="add-btn" onClick={openModal}>Add New</button>
+        <button className="add-btn" onClick={openModal}>+ Add New</button>
       </div>
 
       <table>

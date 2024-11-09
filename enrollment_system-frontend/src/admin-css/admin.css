@@ -49,8 +49,9 @@
 }
 
 .nav-links li.active {
-    background-color: #727272; 
+    background-color: #c7c7c7; 
     font-weight: bold;
+    border-radius: 4px;
 }
 
 .main-content {

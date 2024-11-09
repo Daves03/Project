@@ -110,7 +110,7 @@ const Curriculum = () => {
   
 
   return (
-    <div className="container">
+    <div className="curriculum-container">
       <h2 className="header-curriculum">Manage Curriculum</h2>
 
       {/* Filters Section */}

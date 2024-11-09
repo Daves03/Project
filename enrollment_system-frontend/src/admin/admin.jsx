@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Enrollment from './EnrollmentContent';
-import Billing from './BillsContent';
+import Enrollment from './EnrollmentFormContent';
+import EnrollStudent from './EnrollStudentContent';
 import Curriculum from './CurriculumContent';
 import ClassSchedule from './ClassScheduleContent';
 import '../admin-css/admin.css';
@@ -14,10 +14,10 @@ const AdminPage = () => {
 
     const renderContent = () => {
         switch (activePage) {
-            case 'enrollment':
+            case 'enrollment-form':
                 return <Enrollment />;
-            case 'billing':
-                return <Billing />;
+            case 'enroll-student':
+                return <EnrollStudent />;
             case 'curriculum':
                 return <Curriculum />;
             case 'classSchedule':
@@ -32,23 +32,35 @@ const AdminPage = () => {
         <div className='sidebar'>
             <h2>Admin</h2>
             <ul className='nav-links'>
-            <li onClick={() => setActivePage('enrollment')}>
-                <img src={enrollmentIcon} alt="Enrollment" className="nav-icon" />
-                Enrollment
-            </li>
-            <li onClick={() => setActivePage('billing')}>
-                <img src={billingIcon} alt="Billing" className="nav-icon" />
-                Billing
-            </li>
-            <li onClick={() => setActivePage('curriculum')}>
-                <img src={curriculumIcon} alt="Curriculum" className="nav-icon" />
-                Curriculum
-            </li>
-            <li onClick={() => setActivePage('classSchedule')}>
-                <img src={classScheduleIcon} alt="Class Schedule" className="nav-icon" />
-                Class Schedule
-            </li>
-        </ul>
+                <li
+                    onClick={() => setActivePage('enrollment-form')}
+                    className={activePage === 'enrollment-form' ? 'active' : ''}
+                >
+                    <img src={enrollmentIcon} alt="Enrollment" className="nav-icon" />
+                    Enrollment Form
+                </li>
+                <li
+                    onClick={() => setActivePage('enroll-student')}
+                    className={activePage === 'enroll-student' ? 'active' : ''}
+                >
+                    <img src={billingIcon} alt="Billing" className="nav-icon" />
+                    Enroll Student
+                </li>
+                <li
+                    onClick={() => setActivePage('curriculum')}
+                    className={activePage === 'curriculum' ? 'active' : ''}
+                >
+                    <img src={curriculumIcon} alt="Curriculum" className="nav-icon" />
+                    Curriculum
+                </li>
+                <li
+                    onClick={() => setActivePage('classSchedule')}
+                    className={activePage === 'classSchedule' ? 'active' : ''}
+                >
+                    <img src={classScheduleIcon} alt="Class Schedule" className="nav-icon" />
+                    Class Schedule
+                </li>
+            </ul>
         </div>
     );
 
