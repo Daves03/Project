@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import Enrollment from './EnrollmentFormContent';
-import EnrollStudent from './EnrollStudentContent';
-import './admin-css/admin.css';
-import enrollmentIcon from './assets-admin/enrollment-icon.png';
-import billingIcon from './assets-admin/billing-icon.png';
+import SocFee from './StudentSocFee';
+import './officers-css/officers.css';
+import enrollmentIcon from './assets-officers/enrollment-icon.png';
+import billingIcon from './assets-officers/billing-icon.png';
 
-const AdminPage = () => {
+const OfficersPage = () => {
     const [activePage, setActivePage] = useState('enrollment');
 
     const renderContent = () => {
         switch (activePage) {
             case 'enrollment-form':
                 return <Enrollment />;
-            case 'enroll-student':
-                return <EnrollStudent />;
+            case 'student-socfee':
+                return <SocFee />;
             default:
                 return <Enrollment />;
         }
@@ -21,35 +21,35 @@ const AdminPage = () => {
 
     // Sidebar Component
     const Sidebar = () => (
-        <div className='sidebar'>
-            <h2>Admin</h2>
-            <ul className='nav-links'>
+        <div className='sidebar-officers'>
+            <h2>Officers</h2>
+            <ul className='nav-links-officers'>
                 <li
                     onClick={() => setActivePage('enrollment-form')}
                     className={activePage === 'enrollment-form' ? 'active' : ''}
                 >
-                    <img src={enrollmentIcon} alt="Enrollment" className="nav-icon" />
+                    <img src={enrollmentIcon} alt="Enrollment" className="nav-icon-officers" />
                     Enrollment Form
                 </li>
                 <li
-                    onClick={() => setActivePage('enroll-student')}
+                    onClick={() => setActivePage('student-socfee')}
                     className={activePage === 'enroll-student' ? 'active' : ''}
                 >
-                    <img src={billingIcon} alt="Billing" className="nav-icon" />
-                    Enroll Student
+                    <img src={billingIcon} alt="Billing" className="nav-icon-officers" />
+                    Society Fee
                 </li>
             </ul>
         </div>
     );
 
     return (
-        <div className='admin-container'>
+        <div className='officers-container'>
             <Sidebar />
-            <div className='admin-content'>
+            <div className='officers-content'>
                 {renderContent()}
             </div>
         </div>
     );
 };
 
-export default AdminPage;
+export default OfficersPage;

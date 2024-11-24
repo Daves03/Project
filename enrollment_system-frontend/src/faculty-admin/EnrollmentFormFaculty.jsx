@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './admin-css/enrollment-form.css';
+import './faculty-css/enrollment-form-faculty.css'
 
 const Enrollment = () => {
     const [showModal, setShowModal] = useState(false);

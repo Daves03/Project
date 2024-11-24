@@ -1,21 +1,21 @@
 import React from 'react';
-import './admin-css/enroll-student.css';
+import './officers-css/student-socfee.css';
 
 const EnrollStudent = () => {
     return (
-        <div className="enroll-student-container">
-            <h1 className="title">Enroll Student</h1>
+        <div className="socite-fee-container">
+            <h1 className="title-officers">Students Society Fee</h1>
 
-            <div className="top-controls">
-                <input type="text" placeholder="Search by name or student number" className="search-bar" />
+            <div className="top-controls-officers">
+                <input type="text" placeholder="Search by name or student number" className="search-bar-officers" />
                 
                 
-                <select className="filter">
+                <select className="filter-officers">
                     <option value="">Filter by Section</option>
                     <option value="A">BSCS 3-1</option>
                 </select>
 
-                <select className="filter">
+                <select className="filter-officers">
                     <option value="">Filter by Year Level</option>
                     <option value="1">1st Year</option>
                     <option value="2">2nd Year</option>
@@ -23,12 +23,11 @@ const EnrollStudent = () => {
                     <option value="4">4th Year</option>
                 </select>
 
-                <button className="add-btn">Add Student</button>
-                <button className="add-btn">Add Section</button>
+                <button className="add-btn-officers">Add Paid Student</button>
             </div>
 
-            <div className="table-container">
-                <table className="student-table">
+            <div className="table-container-officers">
+                <table className="student-table-officers">
                     <thead>
                         <tr>
                             <th>Student Name</th>
@@ -37,10 +36,10 @@ const EnrollStudent = () => {
                             <th>Year Level</th>
                             <th>Section</th>
                             <th>Course</th>
-                            <th>Address</th>
-                            <th>Email</th>
-                            <th>Guardian</th>
-                            <th>Guardian Number</th>
+                            <th>1st year (SocFee)</th>
+                            <th>2nd year (SocFee)</th>
+                            <th>3rd year (SocFee)</th>
+                            <th>4th year (SocFee)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,10 +50,10 @@ const EnrollStudent = () => {
                             <td>3rd Year</td>
                             <td>3-1</td>
                             <td>BSCS</td>
-                            <td>123 moon st</td>
-                            <td>123123@example.com</td>
-                            <td>mama</td>
-                            <td>123-456-7890</td>
+                            <td>paid</td>
+                            <td>paid</td>
+                            <td>paid</td>
+                            <td>not paid</td>
                         </tr>
                     </tbody>
                 </table>

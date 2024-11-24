@@ -1,33 +1,40 @@
-.enroll-student-container {
+.student-checklist-container {
     padding: 20px;
     font-family: Arial, sans-serif;
     width: 100%;
     padding-left: 140px;
 }
 
-.title {
-    font-size: 24px;
-    font-weight: bold;
+.title-faculty {
+    width: 95%;
+    display: flex;
     color: #333;
-    text-align: left;
-    margin-bottom: 20px;
+    justify-content: center;
+    height: 40px;
+    background-color: #e2e2e2;
+    text-align: center;
+    margin-bottom: 10px;
+    align-items: center;
+    border-radius: 4px 4px 0px 0px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
 }
 
-.top-controls {
+.top-controls-faculty {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: 47px;
     margin-bottom: 20px;
 }
 
-.search-bar {
+.search-bar-faculty {
     padding: 8px;
     width: 250px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-.add-btn {
+.add-btn-faculty {
     padding: 8px 12px;
     background-color: #007bff;
     color: white;
@@ -36,24 +43,24 @@
     cursor: pointer;
 }
 
-.add-btn:hover {
+.add-btn-faculty:hover {
     background-color: #0056b3;
 }
 
-.filter {
+.filter-faculty {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-.table-container {
+.table-container-faculty {
     width: 95%; 
     height: 100%; 
     overflow: auto; 
     border: 1px solid #ddd; 
 }
 
-.student-table {
+.student-table-faculty {
     width: 400px;
     border-collapse: collapse;
     font-size: 14px;
@@ -61,7 +68,7 @@
     vertical-align: middle;
 }
 
-.student-table thead th {
+.student-table-faculty thead th {
     text-align: center;
     vertical-align: middle;
     background-color: #f2f2f2;
@@ -71,7 +78,7 @@
     border-bottom: 1px solid #ddd;
 }
 
-.student-table tbody td {
+.student-table-faculty tbody td {
     text-align: center; 
     vertical-align: middle;
     padding: 10px;

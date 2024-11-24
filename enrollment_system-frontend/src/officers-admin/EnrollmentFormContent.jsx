@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './admin-css/enrollment-form.css';
+import './officers-css/enrollment-form-officers.css';
 
 const Enrollment = () => {
     const [showModal, setShowModal] = useState(false);
@@ -30,7 +30,7 @@ const Enrollment = () => {
                             <td>{student.name}</td>
                             <td className="buttons-cell">
                                 <button onClick={() => openModal(student)} className="view-btn">
-                                    View Checklist
+                                    View Form
                                 </button>
                                 <button className="accept-btn">Accept</button>
                                 <button className="decline-btn">Decline</button>

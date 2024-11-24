@@ -1,21 +1,21 @@
 import React from 'react';
-import './admin-css/enroll-student.css';
+import './faculty-css/student-checklist.css';
 
 const EnrollStudent = () => {
     return (
-        <div className="enroll-student-container">
-            <h1 className="title">Enroll Student</h1>
+        <div className="student-checklist-container">
+            <h1 className="title-faculty">Enroll Student</h1>
 
-            <div className="top-controls">
-                <input type="text" placeholder="Search by name or student number" className="search-bar" />
+            <div className="top-controls-faculty">
+                <input type="text" placeholder="Search by name or student number" className="search-bar-faculty" />
                 
                 
-                <select className="filter">
+                <select className="filter-faculty">
                     <option value="">Filter by Section</option>
                     <option value="A">BSCS 3-1</option>
                 </select>
 
-                <select className="filter">
+                <select className="filter-faculty">
                     <option value="">Filter by Year Level</option>
                     <option value="1">1st Year</option>
                     <option value="2">2nd Year</option>
@@ -23,12 +23,11 @@ const EnrollStudent = () => {
                     <option value="4">4th Year</option>
                 </select>
 
-                <button className="add-btn">Add Student</button>
-                <button className="add-btn">Add Section</button>
+                <button className="add-btn-faculty">Consult Student</button>
             </div>
 
-            <div className="table-container">
-                <table className="student-table">
+            <div className="table-container-faculty">
+                <table className="student-table-faculty">
                     <thead>
                         <tr>
                             <th>Student Name</th>
