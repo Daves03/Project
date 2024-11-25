@@ -1,48 +1,57 @@
 // src/Auth.jsx
-import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
-import './css/auth.css'; // Import the CSS for styling
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./css/auth.css"; // Import the CSS for styling
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [name, setName] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
-  const [isRegistering, setIsRegistering] = useState(false); 
-  const navigate = useNavigate(); 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isRegistering, setIsRegistering] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/api/login', { email, password });
+      const response = await axios.post("http://localhost:8000/api/login", {
+        email,
+        password,
+      });
       console.log(response.data);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('role', response.data.role);
-  
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
+
       // Debug: Check the stored role
-      console.log('Token:', localStorage.getItem('token'));
-      console.log('Role:', localStorage.getItem('role'));
-      
-      alert('Logged in successfully!');
+      console.log("Token:", localStorage.getItem("token"));
+      console.log("Role:", localStorage.getItem("role"));
+
+      alert("Logged in successfully!");
 
       // Navigate to the appropriate dashboard based on role
-      if (response.data.role === 'admin') {
-        console.log('Redirecting to admin dashboard...');
-        navigate('/admin'); 
-    } else if (response.data.role === 'student') {
-        console.log('Redirecting to student dashboard...');
-        navigate('/home'); 
+      if (response.data.role === "admin") {
+        console.log("Redirecting to admin dashboard...");
+        navigate("/admin");
+      } else if (response.data.role === "student") {
+        console.log("Redirecting to student dashboard...");
+        navigate("/home");
+      } else if (response.data.role === "officers") {
+        console.log("Redirecting to officers dashboard...");
+        navigate("/officers");
+      } else if (response.data.role === "faculty") {
+        console.log("Redirecting to faculty dashboard...");
+        navigate("/faculty");
       }
-  } catch (error) {
-    console.error('Login failed:', error);
-    const message = error.response?.data?.message || 'Invalid credentials!';
-    alert(message);
-  }
-};
+    } catch (error) {
+      console.error("Login failed:", error);
+      const message = error.response?.data?.message || "Invalid credentials!";
+      alert(message);
+    }
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -51,36 +60,51 @@ const Auth = () => {
       return;
     }
     try {
-      await axios.post('http://localhost:8000/api/register', { name, email, password, verificationCode });
-      alert('Registered successfully! Please login.');
+      await axios.post("http://localhost:8000/api/register", {
+        name,
+        email,
+        password,
+        verificationCode,
+      });
+      alert("Registered successfully! Please login.");
       setIsLogin(true);
     } catch (error) {
-      console.error('Registration failed:', error);
-      alert('Error during registration!');
+      console.error("Registration failed:", error);
+      alert("Error during registration!");
     }
   };
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
-    alert('Password reset link sent to your email!');
+    alert("Password reset link sent to your email!");
   };
 
   const handleSendCode = async () => {
     try {
-      await axios.post('http://localhost:8000/api/send-code', { email });
-      alert('Verification code sent to your email!');
+      await axios.post("http://localhost:8000/api/send-code", { email });
+      alert("Verification code sent to your email!");
     } catch (error) {
-      console.error('Error sending code:', error);
-      alert('Error sending verification code!');
+      console.error("Error sending code:", error);
+      alert("Error sending verification code!");
     }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-box">
-        <img src="assets/cvsu_logo.png" alt="University Logo" className="logo" />
+        <img
+          src="assets/cvsu_logo.png"
+          alt="University Logo"
+          className="logo"
+        />
         <h3>Cavite State University - Bacoor</h3>
-        <h2>{isLogin ? 'Login' : isForgotPassword ? 'Forgot Password' : 'Register'}</h2>
+        <h2>
+          {isLogin
+            ? "Login"
+            : isForgotPassword
+            ? "Forgot Password"
+            : "Register"}
+        </h2>
 
         {isForgotPassword ? (
           <form onSubmit={handleForgotPassword}>
@@ -91,7 +115,7 @@ const Auth = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            
+
             <input
               type="password"
               placeholder="New Password"
@@ -118,13 +142,18 @@ const Auth = () => {
                 Send
               </button>
             </div>
-            <button className='loginButtons' type="submit">Confirm</button>
+            <button className="loginButtons" type="submit">
+              Confirm
+            </button>
             <p>
-              Already have an account?{' '}
-              <button className='login-button'   onClick={() => {
-                setIsForgotPassword(false);
-                setIsLogin(true);
-              }}>
+              Already have an account?{" "}
+              <button
+                className="login-button"
+                onClick={() => {
+                  setIsForgotPassword(false);
+                  setIsLogin(true);
+                }}
+              >
                 Login
               </button>
             </p>
@@ -177,30 +206,40 @@ const Auth = () => {
                 </div>
               </>
             )}
-            <button className='loginButtons' type="submit">{isLogin ? 'Login' : 'Register'}</button>
+            <button className="loginButtons" type="submit">
+              {isLogin ? "Login" : "Register"}
+            </button>
             <p>
               {isLogin ? (
                 <>
-                  Don't have an account?{' '}
-                  <button className='textButton' onClick={() => {
-                    setIsLogin(false);
-                  }}>
+                  Don't have an account?{" "}
+                  <button
+                    className="textButton"
+                    onClick={() => {
+                      setIsLogin(false);
+                    }}
+                  >
                     Register
                   </button>
                 </>
               ) : (
-                <button onClick={() => {
-                  setIsLogin(true);
-                }}>
+                <button
+                  onClick={() => {
+                    setIsLogin(true);
+                  }}
+                >
                   Login
                 </button>
               )}
               {isLogin && (
                 <>
                   <br />
-                  <button className='text-forgot' onClick={() => {
-                    setIsForgotPassword(true);
-                  }}>
+                  <button
+                    className="text-forgot"
+                    onClick={() => {
+                      setIsForgotPassword(true);
+                    }}
+                  >
                     Forgot Password?
                   </button>
                 </>

@@ -13,23 +13,44 @@ class UserRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Check if roles exist
-        $adminRole = Role::findByName('admin'); // Fetch the admin role
-        $studentRole = Role::findByName('student'); // Fetch the student role
-
-        // Create a user if it does not exist
-        $user = User::firstOrCreate(
-            ['email' => 'admin@example.com'], // Unique key to check if the user exists
+        // Ensure all roles exist
+        $roles = ['admin', 'student', 'faculty', 'officers'];
+    
+        foreach ($roles as $roleName) {
+            \Spatie\Permission\Models\Role::firstOrCreate(['name' => $roleName]);
+        }
+    
+        // Update or create users with specific roles
+        $adminUser = \App\Models\User::updateOrCreate(
+            ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin User',
-                'password' => bcrypt('password'), // Hash the password
+                'password' => bcrypt('password'),
+                'role' => 'admin',
             ]
         );
-
-        // Assign role to the user if the role exists
-        if ($adminRole) {
-            $user->assignRole($adminRole);
-        }
+        $adminUser->assignRole('admin');
+    
+        $facultyUser = \App\Models\User::updateOrCreate(
+            ['email' => 'faculty@example.com'],
+            [
+                'name' => 'Faculty User',
+                'password' => bcrypt('password'),
+                'role' => 'faculty',
+            ]
+        );
+        $facultyUser->assignRole('faculty');
+    
+        $officerUser = \App\Models\User::updateOrCreate(
+            ['email' => 'officer@example.com'],
+            [
+                'name' => 'Officer User',
+                'password' => bcrypt('password'),
+                'role' => 'officers',
+            ]
+        );
+        $officerUser->assignRole('officers');
     }
-}
+    
 
+}
