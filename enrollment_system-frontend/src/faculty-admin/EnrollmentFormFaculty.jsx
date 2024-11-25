@@ -30,7 +30,7 @@ const Enrollment = () => {
                             <td>{student.name}</td>
                             <td className="buttons-cell">
                                 <button onClick={() => openModal(student)} className="view-btn">
-                                    View Checklist
+                                    View Checklists
                                 </button>
                                 <button className="accept-btn">Accept</button>
                                 <button className="decline-btn">Decline</button>
