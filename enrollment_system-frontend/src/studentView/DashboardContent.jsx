@@ -78,7 +78,7 @@ const Schedule = () => {
   return (
     <div className="schedule-container">
       <div className="notification">
-        <div className="header">
+        <div className="header-notification">
           <h2>Notification</h2>
         </div>
         {notifications.length > 0 ? (

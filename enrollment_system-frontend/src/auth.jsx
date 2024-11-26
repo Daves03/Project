@@ -1,18 +1,15 @@
-// src/Auth.jsx
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./css/auth.css"; // Import the CSS for styling
+import "./css/auth.css";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -26,24 +23,15 @@ const Auth = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
 
-      // Debug: Check the stored role
-      console.log("Token:", localStorage.getItem("token"));
-      console.log("Role:", localStorage.getItem("role"));
-
       alert("Logged in successfully!");
 
-      // Navigate to the appropriate dashboard based on role
       if (response.data.role === "admin") {
-        console.log("Redirecting to admin dashboard...");
         navigate("/admin");
       } else if (response.data.role === "student") {
-        console.log("Redirecting to student dashboard...");
         navigate("/home");
       } else if (response.data.role === "officers") {
-        console.log("Redirecting to officers dashboard...");
         navigate("/officers");
       } else if (response.data.role === "faculty") {
-        console.log("Redirecting to faculty dashboard...");
         navigate("/faculty");
       }
     } catch (error) {
@@ -53,40 +41,24 @@ const Auth = () => {
     }
   };
 
-  const handleRegister = async (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
     try {
-      await axios.post("http://localhost:8000/api/register", {
-        name,
+      await axios.post("http://localhost:8000/api/send-message", {
         email,
-        password,
-        verificationCode,
+        message,
       });
-      alert("Registered successfully! Please login.");
-      setIsLogin(true);
+      alert("Message sent successfully!");
+      setIsLogin(true); // Redirect to login after sending the message
     } catch (error) {
-      console.error("Registration failed:", error);
-      alert("Error during registration!");
+      console.error("Message sending failed:", error);
+      alert("Error sending message!");
     }
   };
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     alert("Password reset link sent to your email!");
-  };
-
-  const handleSendCode = async () => {
-    try {
-      await axios.post("http://localhost:8000/api/send-code", { email });
-      alert("Verification code sent to your email!");
-    } catch (error) {
-      console.error("Error sending code:", error);
-      alert("Error sending verification code!");
-    }
   };
 
   return (
@@ -103,7 +75,7 @@ const Auth = () => {
             ? "Login"
             : isForgotPassword
             ? "Forgot Password"
-            : "Register"}
+            : "Request Account"}
         </h2>
 
         {isForgotPassword ? (
@@ -115,7 +87,6 @@ const Auth = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-
             <input
               type="password"
               placeholder="New Password"
@@ -130,25 +101,13 @@ const Auth = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
-            <div className="verification-code-container">
-              <input
-                type="text"
-                placeholder="Verification Code"
-                value={verificationCode}
-                onChange={(e) => setVerificationCode(e.target.value)}
-                required
-              />
-              <button type="button" onClick={handleSendCode}>
-                Send
-              </button>
-            </div>
             <button className="loginButtons" type="submit">
               Confirm
             </button>
             <p>
               Already have an account?{" "}
               <button
-                className="login-button"
+                className="login-panel"
                 onClick={() => {
                   setIsForgotPassword(false);
                   setIsLogin(true);
@@ -159,59 +118,27 @@ const Auth = () => {
             </p>
           </form>
         ) : (
-          <form onSubmit={isLogin ? handleLogin : handleRegister}>
-            {!isLogin && (
-              <input
-                type="text"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            )}
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            {!isLogin && (
+          <form onSubmit={isLogin ? handleLogin : handleSendMessage}>
+            {isLogin ? (
               <>
                 <input
-                  type="password"
-                  placeholder="Confirm Password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-                <div className="verification-code-container">
-                  <input
-                    type="text"
-                    placeholder="Verification Code"
-                    value={verificationCode}
-                    onChange={(e) => setVerificationCode(e.target.value)}
-                    required
-                  />
-                  <button type="button" onClick={handleSendCode}>
-                    Send
-                  </button>
-                </div>
-              </>
-            )}
-            <button className="loginButtons" type="submit">
-              {isLogin ? "Login" : "Register"}
-            </button>
-            <p>
-              {isLogin ? (
-                <>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button className="loginButtons" type="submit">
+                  Login
+                </button>
+                <p>
                   Don't have an account?{" "}
                   <button
                     className="textButton"
@@ -219,20 +146,8 @@ const Auth = () => {
                       setIsLogin(false);
                     }}
                   >
-                    Register
+                    Send Message
                   </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => {
-                    setIsLogin(true);
-                  }}
-                >
-                  Login
-                </button>
-              )}
-              {isLogin && (
-                <>
                   <br />
                   <button
                     className="text-forgot"
@@ -242,9 +157,40 @@ const Auth = () => {
                   >
                     Forgot Password?
                   </button>
-                </>
-              )}
-            </p>
+                </p>
+              </>
+            ) : (
+              <>
+                <input
+                  type="email"
+                  placeholder="Recipient's Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <textarea
+                  className="text-area-box"
+                  placeholder="Message Description"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                />
+                
+                <button className="loginButtons" type="submit">
+                  Send Message
+                </button>
+                <p>
+                  <button
+                  className="login-panel"
+                    onClick={() => {
+                      setIsLogin(true);
+                    }}
+                  >
+                    Login
+                  </button>
+                </p>
+              </>
+            )}
           </form>
         )}
       </div>
