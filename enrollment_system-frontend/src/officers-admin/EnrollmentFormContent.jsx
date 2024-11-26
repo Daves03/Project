@@ -1,46 +1,143 @@
-import React, { useState } from 'react';
-import './officers-css/enrollment-form-officers.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./officers-css/enrollment-form-officers.css";
 
 const Enrollment = () => {
-    const [showModal, setShowModal] = useState(false);
-    const [selectedStudent, setSelectedStudent] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [students, setStudents] = useState([]);
 
-    const students = [
-        { id: 1, name: 'Raven Ampere' }
-    ];
-
-    const openModal = (student) => {
-        setSelectedStudent(student);
-        setShowModal(true);
+  // Fetching students from the backend
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/students");
+        setStudents(response.data);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
     };
 
-    const closeModal = () => {
-        setShowModal(false);
-        setSelectedStudent(null);
-    };
+    fetchStudents();
+  }, []);
 
-    return (
-        <div className="enrollment-container">
-            <h2 className="title">Enrollment Forms</h2>
-            
-            <table className="notification-table">
-                <tbody>
-                    {students.map((student) => (
-                        <tr key={student.id}>
-                            <td>{student.name}</td>
-                            <td className="buttons-cell">
-                                <button onClick={() => openModal(student)} className="view-btn">
-                                    View Form
-                                </button>
-                                <button className="accept-btn">Accept</button>
-                                <button className="decline-btn">Decline</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+  const openModal = (student) => {
+    setSelectedStudent(student);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedStudent(null);
+  };
+
+  const declinePayment = async (studentId) => {
+    try {
+      await axios.post(
+        `http://127.0.0.1:8000/api/students/${studentId}/decline-payment`,
+        {
+          message: "Your payment was declined due to invalid details.",
+        }
+      );
+
+      alert("Payment decline notification sent to the student.");
+
+      // Remove the declined student from the list
+      setStudents((prevStudents) =>
+        prevStudents.filter((student) => student.id !== studentId)
+      );
+    } catch (error) {
+      console.error("Error declining payment:", error);
+      alert("Failed to send decline notification.");
+    }
+  };
+
+  return (
+    <div className="enrollment-container">
+      <h2 className="title">Enrollment Forms</h2>
+
+      <table className="notification-table">
+        <tbody>
+          {students.map((student) => (
+            <tr key={student.id}>
+              <td>
+                {student.first_name} {student.last_name}
+              </td>
+              <td>{student.student_number}</td>
+              <td className="buttons-cell">
+                <button onClick={() => openModal(student)} className="view-btn">
+                  View Form
+                </button>
+                <button className="accept-btn">Accept</button>
+                <button
+                  className="decline-btn"
+                  onClick={() => declinePayment(student.id)}
+                >
+                  Decline
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Modal with enhanced design */}
+      {showModal && selectedStudent && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Student Details</h2>
+              <button
+                className="close-btn"
+                onClick={closeModal}
+                aria-label="Close Modal"
+              >
+                &times;
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <p>
+                <strong>Name: </strong>
+                {selectedStudent.first_name} {selectedStudent.last_name}
+              </p>
+              <p>
+                <strong>Student Number: </strong>
+                {selectedStudent.student_number}
+              </p>
+              <br />
+              <div className="modal-header">
+                <h2>Payment Details</h2>
+              </div>
+              <br />
+              <p>
+                <strong>Mobile Number: </strong>
+                {selectedStudent.payment?.mobile_number}
+              </p>
+              <p>
+                <strong>Amount: </strong>
+                {selectedStudent.payment?.amount}
+              </p>
+              <p>
+                <strong>Sender Name: </strong>
+                {selectedStudent.payment?.sender_name}
+              </p>
+              <p>
+                <strong>Reference Number: </strong>
+                {selectedStudent.payment?.reference_number}
+              </p>
+            </div>
+
+            <div className="modal-footer">
+              <button onClick={closeModal} className="close-btn">
+                Close
+              </button>
+            </div>
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default Enrollment;

@@ -1,95 +1,191 @@
 .enrollment-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    padding-left: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  padding-left: 130px;
 }
 
 .title {
-    width: 850px;
-    display: flex;
-    color: black;
-    justify-content: center;
-    height: 40px;
-    background-color: #e2e2e2;
-    text-align: center;
-    margin-bottom: 10px;
-    align-items: center;
-    border-radius: 4px 4px 0px 0px;
-    font-family: Arial, Helvetica, sans-serif;
+  width: 850px;
+  display: flex;
+  color: black;
+  justify-content: center;
+  height: 40px;
+  background-color: #e2e2e2;
+  text-align: center;
+  margin-bottom: 10px;
+  align-items: center;
+  border-radius: 4px 4px 0px 0px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .notification-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
 }
 
 .notification-table th,
 .notification-table td {
-    padding: 10px;
-    border: none; 
+  padding: 10px;
+  border: none;
 }
 
 .notification-table th {
-    background-color: #f2f2f2;
-    text-align: center;
+  background-color: #f2f2f2;
+  text-align: center;
 }
 
 .notification-table tbody tr {
-    border-bottom: 1px solid gray; 
+  border-bottom: 1px solid gray;
 }
 
 .notification-table td:first-child {
-    text-align: left;
-    padding-right: 50px;
+  text-align: left;
+  padding-right: 50px;
 }
 
 .notification-table td.buttons-cell {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .view-btn,
 .accept-btn,
 .decline-btn {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0;
 }
 
 .view-btn {
-    background-color: #007bff;
-    color: white;
+  background-color: #007bff;
+  color: white;
 }
 
 .view-btn:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .accept-btn {
-    background-color: #28a745;
-    color: white;
+  background-color: #28a745;
+  color: white;
 }
 
 .accept-btn:hover {
-    background-color: #218838;
+  background-color: #218838;
 }
 
 .decline-btn {
-    background-color: #dc3545;
-    color: white;
+  background-color: #dc3545;
+  color: white;
 }
 
 .decline-btn:hover {
-    background-color: #c82333;
+  background-color: #c82333;
 }
 
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal */
+.modal-content {
+  background-color: white;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.3s;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+/* Footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-footer button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.modal-footer button:hover {
+  background-color: #0056b3;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(50px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

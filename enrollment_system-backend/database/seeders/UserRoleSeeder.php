@@ -13,14 +13,14 @@ class UserRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ensure all roles exist
+        
         $roles = ['admin', 'student', 'faculty', 'officers'];
     
         foreach ($roles as $roleName) {
             \Spatie\Permission\Models\Role::firstOrCreate(['name' => $roleName]);
         }
     
-        // Update or create users with specific roles
+        
         $adminUser = \App\Models\User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [
@@ -50,7 +50,22 @@ class UserRoleSeeder extends Seeder
             ]
         );
         $officerUser->assignRole('officers');
+
+        $studentUser = User::updateOrCreate(
+            ['email' => 'student@example.com'],
+            [
+                'name' => 'Student User',
+                'password' => bcrypt('password'),
+            ]
+        );
+        $studentUser->assignRole('student');
+
+        
     }
+
+    
+
+    
     
 
 }

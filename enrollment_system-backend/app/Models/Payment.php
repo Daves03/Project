@@ -9,8 +9,10 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['student_id', 'mobile_number', 'sender_name', 'reference_number', 'amount'];
+    // Add 'status' to the fillable array so it can be mass-assigned
+    protected $fillable = ['student_id', 'mobile_number', 'sender_name', 'reference_number', 'amount', 'status'];
 
+    // Define the relationship to the Student model
     public function student()
     {
         return $this->belongsTo(Student::class);
