@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2024 at 04:12 AM
+-- Generation Time: Nov 26, 2024 at 01:03 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -45,9 +45,8 @@ CREATE TABLE `addresses` (
 --
 
 INSERT INTO `addresses` (`id`, `student_id`, `house_number`, `street`, `subdivision`, `barangay`, `municipality`, `zip_code`, `created_at`, `updated_at`) VALUES
-(2, 13, '123123', 'qweqweqwe', 'qweqweqwesad', 'dasdasdasd', 'sadasdasd', '12313', '2024-10-30 06:30:18', '2024-10-30 06:30:18'),
-(3, 17, '123123', 'qweqweqwe', 'qweqweqwesad', 'dasdasdasd', 'sadasdasd', '12313', '2024-10-30 06:37:13', '2024-10-30 06:37:13'),
-(4, 18, '123sadqeasd', 'qaeasf', 'asdfgqw', 'eadqwer', 'qweasdxzzcz', '12334', '2024-10-30 07:30:06', '2024-10-30 07:30:06');
+(17, 37, 'qweqwe', 'qweqwe', 'qweqwe', 'qweqwe', 'qweqwe', '4242', '2024-11-26 00:36:40', '2024-11-26 00:36:40'),
+(18, 38, 'qweqwe', 'qweqwe', 'qweqwe', 'qweqwe', 'qweqwe', '242', '2024-11-26 01:03:45', '2024-11-26 01:03:45');
 
 -- --------------------------------------------------------
 
@@ -76,8 +75,10 @@ CREATE TABLE `courses` (
 --
 
 INSERT INTO `courses` (`id`, `code`, `title`, `CreditUnitsLec`, `CreditUnitsLab`, `ContactHoursLec`, `ContactHoursLab`, `Prerequisite`, `created_at`, `updated_at`, `program`, `semester`, `year`) VALUES
-(1, 'DCIT 9', 'Advance', 1, 2, 3, 4, 'DCIT 59', '2024-10-30 23:08:18', '2024-11-19 18:39:19', 'BS Computer Science', 'First Semester', 3),
-(5, 'hotdog 25', 'hotdog subj', 2, 3, 2, 3, 'hotdog 23', '2024-10-30 23:34:04', '2024-11-19 18:39:19', 'BS Computer Science', 'First Semester', 1);
+(1, 'DCIT 9', 'Advance', 1, 2, 3, 4, 'DCIT 59', '2024-10-30 23:08:18', '2024-11-24 07:54:03', 'BS Computer Science', 'First Semester', 3),
+(5, 'hotdog 25', 'hotdog subj', 2, 3, 2, 3, 'hotdog 23', '2024-10-30 23:34:04', '2024-11-24 07:54:03', 'BS Computer Science', 'First Semester', 1),
+(13, 'asdads', 'asdsad', 2, 2, 2, 2, 'asdsad', '2024-11-24 06:03:54', '2024-11-24 07:54:03', 'BS Information Technology', 'Third Semester', 3),
+(14, 'qweqw', 'eqweqweqw', 2, 2, 2, 2, 'qweqwe', '2024-11-24 07:54:03', '2024-11-24 07:54:03', 'BS Information Technology', 'Third Semester', 4);
 
 -- --------------------------------------------------------
 
@@ -133,9 +134,8 @@ CREATE TABLE `guardians` (
 --
 
 INSERT INTO `guardians` (`id`, `student_id`, `name`, `phone`, `religion`, `created_at`, `updated_at`) VALUES
-(5, 13, 'qweqweqwe', '123123', 'qweqweqwe', '2024-10-30 06:30:18', '2024-10-30 06:30:18'),
-(6, 17, 'qweqweqwe', '123123', 'qweqweqwe', '2024-10-30 06:37:13', '2024-10-30 06:37:13'),
-(7, 18, 'gsgxcv', '12315151', 'asfhbds', '2024-10-30 07:30:06', '2024-10-30 07:30:06');
+(20, 37, 'qweqwe', '1231232', 'qweqwe', '2024-11-26 00:36:40', '2024-11-26 00:36:40'),
+(21, 38, 'qweqwe', '213123', 'asdasd', '2024-11-26 01:03:45', '2024-11-26 01:03:45');
 
 -- --------------------------------------------------------
 
@@ -167,7 +167,13 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (15, '2024_10_31_065735_create_courses_table', 4),
 (16, '2024_10_31_080438_create_curriculum_table', 5),
 (17, '2024_10_31_081005_add_program_semester_year_to_courses_table', 5),
-(18, '2024_11_20_030545_add_is_archive_to_curriculum_table', 6);
+(18, '2024_11_20_030545_add_is_archive_to_curriculum_table', 6),
+(19, '2024_11_25_172057_create_notifications_table', 7),
+(20, '2024_11_25_174620_add_student_details_to_users_table', 8),
+(21, '2024_11_26_040544_add_status_to_payments_table', 9),
+(22, '2024_11_26_075301_add_student_id_to_users_table', 10),
+(23, '2024_11_26_084618_add_archived_to_students_table', 11),
+(24, '2024_11_26_085418_add_read_to_notifications_table', 12);
 
 -- --------------------------------------------------------
 
@@ -198,7 +204,26 @@ CREATE TABLE `model_has_roles` (
 --
 
 INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
-(1, 'App\\Models\\User', 1);
+(1, 'App\\Models\\User', 1),
+(2, 'App\\Models\\User', 7),
+(3, 'App\\Models\\User', 4),
+(5, 'App\\Models\\User', 5);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `student_id` bigint(20) UNSIGNED NOT NULL,
+  `message` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `read` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -226,17 +251,17 @@ CREATE TABLE `payments` (
   `reference_number` varchar(255) NOT NULL,
   `amount` decimal(8,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `status` varchar(255) NOT NULL DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `payments`
 --
 
-INSERT INTO `payments` (`id`, `student_id`, `mobile_number`, `sender_name`, `reference_number`, `amount`, `created_at`, `updated_at`) VALUES
-(1, 13, '123213213', 'qeqweqwe', '123123', 12.00, '2024-10-30 06:30:18', '2024-10-30 06:30:18'),
-(2, 17, '123213213', 'qeqweqwe', '123123', 12.00, '2024-10-30 06:37:13', '2024-10-30 06:37:13'),
-(3, 18, '12763523', 'asdvcbxc', '241241', 53.00, '2024-10-30 07:30:06', '2024-10-30 07:30:06');
+INSERT INTO `payments` (`id`, `student_id`, `mobile_number`, `sender_name`, `reference_number`, `amount`, `created_at`, `updated_at`, `status`) VALUES
+(16, 37, '1241241', 'wqeqwe', '124124214', 42.00, '2024-11-26 00:36:40', '2024-11-26 00:36:40', 'pending'),
+(17, 38, '124124124124', 'qdasdasd', '436456456', 24.00, '2024-11-26 01:03:45', '2024-11-26 01:03:45', 'pending');
 
 -- --------------------------------------------------------
 
@@ -349,7 +374,41 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (80, 'App\\Models\\User', 1, 'API Token', 'bbc48514017ca1527af2772c3531d299e9ade33f6953bb5e8b09677219d397e5', '[\"*\"]', NULL, NULL, '2024-10-30 22:45:08', '2024-10-30 22:45:08'),
 (81, 'App\\Models\\User', 1, 'API Token', '18a648efc098fb93335ef4b5dbda78b5e26e2e2dc955861974fcce0c4cbaa1ae', '[\"*\"]', NULL, NULL, '2024-10-30 23:03:08', '2024-10-30 23:03:08'),
 (82, 'App\\Models\\User', 1, 'API Token', '7640173be085803b28dda4dc004c90a58cf704ffa16f228778b1c7747d125633', '[\"*\"]', NULL, NULL, '2024-10-31 01:14:43', '2024-10-31 01:14:43'),
-(83, 'App\\Models\\User', 1, 'API Token', 'c97b598789a657c21282269f5f929bb8af2af32f6e57e451f6019983cf046578', '[\"*\"]', NULL, NULL, '2024-11-19 18:33:29', '2024-11-19 18:33:29');
+(83, 'App\\Models\\User', 1, 'API Token', 'c97b598789a657c21282269f5f929bb8af2af32f6e57e451f6019983cf046578', '[\"*\"]', NULL, NULL, '2024-11-19 18:33:29', '2024-11-19 18:33:29'),
+(84, 'App\\Models\\User', 1, 'API Token', 'b152314b6b3959d9b4d093095a54030c7274035c84e7e0363fce333ce30e3775', '[\"*\"]', NULL, NULL, '2024-11-23 06:06:53', '2024-11-23 06:06:53'),
+(85, 'App\\Models\\User', 2, 'API Token', 'b808154516284a82e8066819017bf8ca92b1852ad88036e43bd8954415d717dc', '[\"*\"]', NULL, NULL, '2024-11-23 06:10:40', '2024-11-23 06:10:40'),
+(86, 'App\\Models\\User', 1, 'API Token', 'cb25e4424b056800ecce8d1c84bcd3abca46c9283f00e1890a9de6ef4655e582', '[\"*\"]', NULL, NULL, '2024-11-23 07:07:06', '2024-11-23 07:07:06'),
+(87, 'App\\Models\\User', 2, 'API Token', '0b10d1dad723fed147bcdf020f1c98bedba18a07689dd19318260cdd750374cf', '[\"*\"]', NULL, NULL, '2024-11-23 07:07:41', '2024-11-23 07:07:41'),
+(88, 'App\\Models\\User', 1, 'API Token', 'd974a475c2ba6c2075147c5032684d75044cefd60dca2d7df67996e4e293292e', '[\"*\"]', NULL, NULL, '2024-11-24 04:59:18', '2024-11-24 04:59:18'),
+(89, 'App\\Models\\User', 2, 'API Token', '886bd35d35ce729529ce3e2cef4f468a89121d42fbf820c102e80324ca0e93e3', '[\"*\"]', NULL, NULL, '2024-11-24 05:04:45', '2024-11-24 05:04:45'),
+(90, 'App\\Models\\User', 4, 'API Token', '8b2b63e7cd72623aac77f32f5c867dfca50c309f3adf1524765362ae2aeb6932', '[\"*\"]', NULL, NULL, '2024-11-24 21:03:57', '2024-11-24 21:03:57'),
+(91, 'App\\Models\\User', 5, 'API Token', '37e43490b027c946b85ab051db4c406f6abf4830b94b0efc656427b5000babc8', '[\"*\"]', NULL, NULL, '2024-11-24 21:05:00', '2024-11-24 21:05:00'),
+(92, 'App\\Models\\User', 5, 'API Token', '9c26da4d431e45f11a004c5d2ec352b4317e35003ce26a785f0a864862db7e21', '[\"*\"]', NULL, NULL, '2024-11-24 21:11:14', '2024-11-24 21:11:14'),
+(93, 'App\\Models\\User', 4, 'API Token', 'd091535bbb0443299aff143137824b2950b639f026c93af538549393c7d3c0d8', '[\"*\"]', NULL, NULL, '2024-11-24 21:15:11', '2024-11-24 21:15:11'),
+(94, 'App\\Models\\User', 1, 'API Token', '494884f6a1eafd07cc19a882884b9eee34dbc19dbad217c1a84293cb8644c3a0', '[\"*\"]', NULL, NULL, '2024-11-24 21:16:09', '2024-11-24 21:16:09'),
+(95, 'App\\Models\\User', 1, 'API Token', '075ac0c4c4ea71eec7ac96bd66165c4add87d8c486e82cb4c816cf888f219a2b', '[\"*\"]', NULL, NULL, '2024-11-24 21:17:22', '2024-11-24 21:17:22'),
+(96, 'App\\Models\\User', 4, 'API Token', '8b8e269c0dd44268cbd27240887eb6880b5f31633975cf8540575973a7025b59', '[\"*\"]', NULL, NULL, '2024-11-24 21:23:22', '2024-11-24 21:23:22'),
+(97, 'App\\Models\\User', 5, 'API Token', '48c9e57c7a7e0a445b531edc2c14f46b4a86a33cee1e76a337be770609611170', '[\"*\"]', NULL, NULL, '2024-11-24 21:25:03', '2024-11-24 21:25:03'),
+(99, 'App\\Models\\User', 5, 'API Token', '4b1eba8bf0accc72855cd7e79c5d37af8d51daab40647f54fc8d4fd2e43b25f2', '[\"*\"]', NULL, NULL, '2024-11-24 21:33:10', '2024-11-24 21:33:10'),
+(101, 'App\\Models\\User', 1, 'API Token', '7c1cd4ca9e240ad0775a239ec378cee79289c5fe0f88a779de27fce9d5ec8bef', '[\"*\"]', NULL, NULL, '2024-11-24 23:28:36', '2024-11-24 23:28:36'),
+(102, 'App\\Models\\User', 4, 'API Token', '8d186ec8ce94593d1f60b327a0404249f866300dcd1e3a540eb2b7f680b2ea8d', '[\"*\"]', NULL, NULL, '2024-11-24 23:28:55', '2024-11-24 23:28:55'),
+(103, 'App\\Models\\User', 5, 'API Token', 'f843fdc8df22ba2020c2f100e4e8405af138d601799eed286e48ae9fed6974fb', '[\"*\"]', NULL, NULL, '2024-11-25 00:41:31', '2024-11-25 00:41:31'),
+(104, 'App\\Models\\User', 5, 'API Token', '39d4f81ce1976ef8d17c53cda1d1fbe28af8c13c21c32758ff2e54d8048d65a3', '[\"*\"]', NULL, NULL, '2024-11-25 00:42:36', '2024-11-25 00:42:36'),
+(105, 'App\\Models\\User', 1, 'API Token', '43cf5c5fbf5d2de0506807f5b45226077ecc82d2074a7d14ff54eda99afa5589', '[\"*\"]', NULL, NULL, '2024-11-25 00:44:23', '2024-11-25 00:44:23'),
+(106, 'App\\Models\\User', 5, 'API Token', '7809b29c52446356edd522777531044f313673ede9602bf6659bbcf912100321', '[\"*\"]', NULL, NULL, '2024-11-25 00:44:47', '2024-11-25 00:44:47'),
+(107, 'App\\Models\\User', 4, 'API Token', '5aa868babed0f509283ea97c9acd7f5d4d5db202fa45bb9edca1671f2058f689', '[\"*\"]', NULL, NULL, '2024-11-25 00:55:51', '2024-11-25 00:55:51'),
+(108, 'App\\Models\\User', 5, 'API Token', '0f5a91aef955db7f68cc88e9f11d67c017af66a3708b9e0b263dd8084c9f91eb', '[\"*\"]', NULL, NULL, '2024-11-25 00:56:13', '2024-11-25 00:56:13'),
+(109, 'App\\Models\\User', 5, 'API Token', 'b2360994cfad6c824b5fa974f9b30959c1c7f72643555dd5a6ddc50215c98f00', '[\"*\"]', NULL, NULL, '2024-11-25 01:20:26', '2024-11-25 01:20:26'),
+(110, 'App\\Models\\User', 2, 'API Token', 'a4b3b1c7282db17dc17f2001f30020082fa8b021ff23de747477726924f7503d', '[\"*\"]', NULL, NULL, '2024-11-25 09:15:15', '2024-11-25 09:15:15'),
+(111, 'App\\Models\\User', 2, 'API Token', 'e3bf0dae4cceea4f2cc8cd5aaf75acc619bda850f1a6ee059f421b22d322c0ea', '[\"*\"]', NULL, NULL, '2024-11-25 09:15:16', '2024-11-25 09:15:16'),
+(115, 'App\\Models\\User', 1, 'API Token', '3f91c2682ca8a4dc872c4cb7c3356b64063f9d40b264dac4bc79f585a497fbb0', '[\"*\"]', NULL, NULL, '2024-11-25 10:05:12', '2024-11-25 10:05:12'),
+(118, 'App\\Models\\User', 2, 'API Token', '78550b0c2a46acdf28dc335e2baf73a6b4120cfeadbff82e9c6c919a21387a77', '[\"*\"]', NULL, NULL, '2024-11-25 10:57:11', '2024-11-25 10:57:11'),
+(119, 'App\\Models\\User', 5, 'API Token', 'a24cdbe87b9b7e87714aec697ef8b2472afdabea2d73561f6e2e147b60843ae4', '[\"*\"]', NULL, NULL, '2024-11-25 19:39:17', '2024-11-25 19:39:17'),
+(120, 'App\\Models\\User', 2, 'API Token', '591c77cc9f5485f6565a5e0bcead1d6f56ba8b049cc5f88f2fbf1ddb883e582a', '[\"*\"]', NULL, NULL, '2024-11-25 19:39:40', '2024-11-25 19:39:40'),
+(121, 'App\\Models\\User', 7, 'API Token', 'b616302314930d84b20d647be0f17be116d983ace6bb14572d498ff306197720', '[\"*\"]', NULL, NULL, '2024-11-25 19:39:51', '2024-11-25 19:39:51'),
+(126, 'App\\Models\\User', 7, 'API Token', '2134295cb6912a32fe1a1ca5dfc67f866a75a2147c3fdbfb7664bc43b923a6ca', '[\"*\"]', NULL, NULL, '2024-11-25 22:04:51', '2024-11-25 22:04:51'),
+(137, 'App\\Models\\User', 7, 'API Token', 'bd00b8a2bf6efd99ba46c56d7c39e9a142384eb8f37e7a5932fdcd959249c13e', '[\"*\"]', NULL, NULL, '2024-11-25 23:46:53', '2024-11-25 23:46:53'),
+(139, 'App\\Models\\User', 7, 'API Token', '4ff7689aa5d1b1843c5816edc8ef39905e7f71115d6cdb15e7984fa39c91571b', '[\"*\"]', NULL, NULL, '2024-11-26 00:28:22', '2024-11-26 00:28:22');
 
 -- --------------------------------------------------------
 
@@ -371,7 +430,9 @@ CREATE TABLE `roles` (
 
 INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
 (1, 'admin', 'web', '2024-10-21 23:11:42', '2024-10-21 23:11:42'),
-(2, 'student', 'web', '2024-10-21 23:11:42', '2024-10-21 23:11:42');
+(2, 'student', 'web', '2024-10-21 23:11:42', '2024-10-21 23:11:42'),
+(3, 'faculty', 'web', '2024-11-24 21:02:26', '2024-11-24 21:02:26'),
+(5, 'officers', 'web', '2024-11-24 21:08:31', '2024-11-24 21:08:31');
 
 -- --------------------------------------------------------
 
@@ -402,17 +463,17 @@ CREATE TABLE `students` (
   `facebook_link` varchar(255) DEFAULT NULL,
   `birthdate` date NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `archived` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`id`, `email`, `student_number`, `last_name`, `first_name`, `middle_name`, `sex`, `contact_number`, `facebook_link`, `birthdate`, `created_at`, `updated_at`) VALUES
-(13, 'jonkenvergara@gmail.com', '123123', 'qweqwe', 'sdaads', 'qweqwe', 'Male', '123213213', NULL, '1999-02-12', '2024-10-30 06:30:18', '2024-10-30 06:30:18'),
-(17, 'jonkenvergara12@gmail.com', '1231231231', 'qweqweqwqweqwe', 'asdasfasf', 'qweqweasd', 'Male', '12312412313', NULL, '1999-02-12', '2024-10-30 06:37:13', '2024-10-30 06:37:13'),
-(18, 'primoieyasu1@gmail.com', '123123123', 'avzzzg', 'qwhgxxcf', 'qhsdf', 'Female', '123141231', NULL, '1999-03-12', '2024-10-30 07:30:06', '2024-10-30 07:30:06');
+INSERT INTO `students` (`id`, `email`, `student_number`, `last_name`, `first_name`, `middle_name`, `sex`, `contact_number`, `facebook_link`, `birthdate`, `created_at`, `updated_at`, `archived`) VALUES
+(37, 'jonkenvergara19@gmail.com', '123213', 'qweqwe', 'qweqweqw', 'qweqwe', 'Female', '124214', NULL, '2222-02-22', '2024-11-26 00:36:40', '2024-11-26 00:48:06', 1),
+(38, 'jowwwwwa19@gmail.com', '123123', 'qweqweqw', 'eqweqwe', 'qwqweqweqw', 'Female', '12412412', NULL, '2222-02-22', '2024-11-26 01:03:45', '2024-11-26 01:11:22', 1);
 
 -- --------------------------------------------------------
 
@@ -429,16 +490,22 @@ CREATE TABLE `users` (
   `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `role` varchar(255) NOT NULL DEFAULT 'student'
+  `role` varchar(255) NOT NULL DEFAULT 'student',
+  `student_number` varchar(255) DEFAULT NULL,
+  `program` varchar(255) DEFAULT NULL,
+  `student_id` bigint(20) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `role`) VALUES
-(1, 'Admin User', 'admin@example.com', NULL, '$2y$12$eSfpdR1P6ezBHjiXyav2I.6YrLeHMZ5Ig4j4BDjfXwse.M0j6f4YG', NULL, '2024-10-21 23:11:42', '2024-10-21 23:11:42', 'admin'),
-(2, 'John Doe', 'john.doe@example.com', NULL, '$2y$12$B2NaC/pfbHGE0qo0/On4rOqUyPcKS0Hwi8a.B3hvfbb6lzrMxt21O', NULL, '2024-10-22 00:41:57', '2024-10-22 00:41:57', 'student');
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `role`, `student_number`, `program`, `student_id`) VALUES
+(1, 'Admin User', 'admin@example.com', NULL, '$2y$12$i0Cw8ER1BCVrKMboi2BmuOHT9CF9FnLvGaz8LKWlFXhnXfoD//2nG', NULL, '2024-10-21 23:11:42', '2024-11-25 10:25:20', 'admin', NULL, NULL, NULL),
+(2, 'John Doe', 'john.doe@example.com', NULL, '$2y$12$B2NaC/pfbHGE0qo0/On4rOqUyPcKS0Hwi8a.B3hvfbb6lzrMxt21O', NULL, '2024-10-22 00:41:57', '2024-10-22 00:41:57', 'student', '202211868', 'Bachelor of Science in Computer Science', NULL),
+(4, 'Faculty User', 'faculty@example.com', NULL, '$2y$12$wEsLkxv3CuL.sX.pD5vaDuZjNRVYXK3QN6SAn23v3idcOxZL25/CS', NULL, '2024-11-24 21:02:28', '2024-11-25 10:25:21', 'faculty', NULL, NULL, NULL),
+(5, 'Officer User', 'officer@example.com', NULL, '$2y$12$Ba9Znn9vIzFcHWMSsriqjOL/0TK.hRRDRRrUuu7sdgDxAIMP.gSWu', NULL, '2024-11-24 21:02:28', '2024-11-25 10:25:21', 'officers', NULL, NULL, NULL),
+(7, 'Student User', 'student@example.com', NULL, '$2y$12$jIisRVnSK/fDLdMO2ohigO1ybiDdlUsjhKVyaEt4i4qWnAJbQAFxi', NULL, '2024-11-25 10:25:21', '2024-11-25 10:25:21', 'student', '123123123213', 'BSCS', NULL);
 
 --
 -- Indexes for dumped tables
@@ -500,6 +567,13 @@ ALTER TABLE `model_has_roles`
   ADD KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`);
 
 --
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `notifications_student_id_foreign` (`student_id`);
+
+--
 -- Indexes for table `password_reset_tokens`
 --
 ALTER TABLE `password_reset_tokens`
@@ -554,7 +628,9 @@ ALTER TABLE `students`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_email_unique` (`email`);
+  ADD UNIQUE KEY `users_email_unique` (`email`),
+  ADD UNIQUE KEY `users_student_number_unique` (`student_number`),
+  ADD KEY `users_student_id_foreign` (`student_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -564,13 +640,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `curriculum`
@@ -588,19 +664,25 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `guardians`
 --
 ALTER TABLE `guardians`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `permissions`
@@ -612,25 +694,25 @@ ALTER TABLE `permissions`
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=140;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
@@ -667,6 +749,12 @@ ALTER TABLE `model_has_roles`
   ADD CONSTRAINT `model_has_roles_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `payments`
 --
 ALTER TABLE `payments`
@@ -678,6 +766,12 @@ ALTER TABLE `payments`
 ALTER TABLE `role_has_permissions`
   ADD CONSTRAINT `role_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `role_has_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
