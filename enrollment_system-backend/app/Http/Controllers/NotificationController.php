@@ -60,6 +60,17 @@ class NotificationController extends Controller
         }
     }
 
+    public function getAllNotifications()
+{
+    try {
+        $notifications = \App\Models\Notification::latest()->get(); // Get all notifications
+        return response()->json($notifications);
+    } catch (\Exception $e) {
+        Log::error('Error fetching notifications: ' . $e->getMessage());
+        return response()->json(['error' => 'Error fetching notifications'], 500);
+    }
+}
+
     // Method to delete a notification
     public function destroy($id)
     {

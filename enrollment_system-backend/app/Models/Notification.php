@@ -12,7 +12,7 @@ class Notification extends Model
         'message',
         'type',
         'created_at',
-        'read',  // Add this line
+        'read',  
     ];
 
     public function student()

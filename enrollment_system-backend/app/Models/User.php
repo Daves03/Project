@@ -23,7 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'student_number', 'program',
+        'student_number', 'program', 'student_id'
     ];
 
     /**
@@ -50,4 +50,11 @@ class User extends Authenticatable
     // {
     //     return $this->role === $role;
     // }
+
+    public function student()
+{
+    return $this->hasMany(Student::class);
+}
+
+    
 }

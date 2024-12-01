@@ -9,7 +9,10 @@ class Student extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['email', 'student_number', 'last_name', 'first_name', 'middle_name', 'sex', 'contact_number', 'facebook_link', 'birthdate'];
+    protected $fillable = [
+        'email', 'student_number', 'last_name', 'first_name', 'middle_name',
+        'sex', 'contact_number', 'facebook_link', 'birthdate', 'status', 'user_id'
+    ];
 
     // Relationship to Guardian
     public function guardian()
@@ -26,8 +29,18 @@ class Student extends Model
     // Relationship to Payment
     public function payment()
     {
-        return $this->hasOne(Payment::class);
+        return $this->hasOne(Payment::class, 'student_id', 'id');
     }
 
-    public function notifications() { return $this->hasMany(Notification::class); }
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
+    
 }

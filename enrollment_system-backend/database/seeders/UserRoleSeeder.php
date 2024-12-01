@@ -60,6 +60,15 @@ class UserRoleSeeder extends Seeder
         );
         $studentUser->assignRole('student');
 
+        $studentUser = User::updateOrCreate(
+            ['email' => 'jon@example.com'],
+            [
+                'name' => 'Jon User',
+                'password' => bcrypt('password'),
+            ]
+        );
+        $studentUser->assignRole('student');
+
         
     }
 
