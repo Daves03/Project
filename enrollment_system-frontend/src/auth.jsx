@@ -175,13 +175,13 @@ const Auth = () => {
                   onChange={(e) => setMessage(e.target.value)}
                   required
                 />
-                
+
                 <button className="loginButtons" type="submit">
                   Send Message
                 </button>
                 <p>
                   <button
-                  className="login-panel"
+                    className="login-panel"
                     onClick={() => {
                       setIsLogin(true);
                     }}

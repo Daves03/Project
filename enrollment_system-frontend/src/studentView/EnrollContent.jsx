@@ -1,90 +1,156 @@
-import React, { useState } from 'react';
-import '../css/enroll-student.css';
-import qrcodeImage from '../assets/qrcodeSample.jpg';
-import axios from 'axios';
-
+import React, { useState, useEffect } from "react";
+import "../css/enroll-student.css";
+import qrcodeImage from "../assets/qrcodeSample.jpg";
+import axios from "axios";
 
 const Enroll = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    email: '',
-    studentNumber: '',
-    lastName: '',
-    firstName: '',
-    middleName: '',
-    sex: '',
-    contactNumber: '',
-    facebookLink: '',
-    birthdate: '',
-    guardianName: '',
-    guardianPhone: '',
-    religion: '',
-    previousSection: '',
-    houseNumber: '',
-    street: '',
-    subdivision: '',
-    barangay: '',
-    municipality: '',
-    zipCode: '',
-    mobileNumber: '',
-    senderName: '',
-    referenceNumber: '',
-    amount: '',
+    email: "",
+    studentNumber: "",
+    lastName: "",
+    firstName: "",
+    middleName: "",
+    sex: "",
+    contactNumber: "",
+    facebookLink: "",
+    birthdate: "",
+    guardianName: "",
+    guardianPhone: "",
+    religion: "",
+    previousSection: "",
+    houseNumber: "",
+    street: "",
+    subdivision: "",
+    barangay: "",
+    municipality: "",
+    zipCode: "",
+    mobileNumber: "",
+    senderName: "",
+    referenceNumber: "",
+    amount: "",
   });
-
   const [errors, setErrors] = useState({});
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  useEffect(() => {
+    const fetchLoggedInUser = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/user", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you're using a token-based authentication
+          },
+        });
+        setLoggedInUser(response.data);
+      } catch (error) {
+        console.error("Error fetching logged-in user:", error);
+      }
+    };
+
+    fetchLoggedInUser();
+  }, []);
+
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleNextStep = () => {
-    // Validate fields for the current step before proceeding
     let isValid = true;
+    const newErrors = {};
 
     // Basic Info Validation (Step 1)
     if (currentStep === 1) {
-      const requiredFields = ['email', 'studentNumber', 'lastName', 'firstName', 'middleName', 'sex', 'contactNumber', 'birthdate'];
-      requiredFields.forEach(field => {
+      const requiredFields = [
+        "email",
+        "studentNumber",
+        "lastName",
+        "firstName",
+        "middleName",
+        "sex",
+        "contactNumber",
+        "birthdate",
+      ];
+      requiredFields.forEach((field) => {
         if (!formData[field]) {
           isValid = false;
+          newErrors[field] = "This field is required.";
         }
       });
+
+      // Validate email and student number against users data
+
+      if (loggedInUser) {
+        if (
+          loggedInUser.email.trim().toLowerCase() !==
+            formData.email.trim().toLowerCase() ||
+          loggedInUser.student_number.trim() !== formData.studentNumber.trim()
+        ) {
+          isValid = false;
+          newErrors["email"] =
+            "Email or student number does not match your account.";
+          newErrors["studentNumber"] =
+            "Email or student number does not match your account.";
+        }
+      }
     }
 
     // Guardian Info Validation (Step 2)
     if (currentStep === 2) {
-      const requiredFields = ['guardianName', 'guardianPhone', 'religion', 'previousSection'];
-      requiredFields.forEach(field => {
+      const requiredFields = [
+        "guardianName",
+        "guardianPhone",
+        "religion",
+        "previousSection",
+      ];
+      requiredFields.forEach((field) => {
         if (!formData[field]) {
           isValid = false;
+          newErrors[field] = "This field is required.";
         }
       });
     }
 
     // Course Details Validation (Step 3)
     if (currentStep === 3) {
-      const requiredFields = ['houseNumber', 'street', 'subdivision', 'barangay', 'municipality', 'zipCode'];
-      requiredFields.forEach(field => {
+      const requiredFields = [
+        "houseNumber",
+        "street",
+        "subdivision",
+        "barangay",
+        "municipality",
+        "zipCode",
+      ];
+      requiredFields.forEach((field) => {
         if (!formData[field]) {
           isValid = false;
+          newErrors[field] = "This field is required.";
         }
       });
     }
 
     // Payment Info Validation (Step 4)
     if (currentStep === 4) {
-      const requiredFields = ['mobileNumber', 'senderName', 'referenceNumber', 'amount'];
-      requiredFields.forEach(field => {
+      const requiredFields = [
+        "mobileNumber",
+        "senderName",
+        "referenceNumber",
+        "amount",
+      ];
+      requiredFields.forEach((field) => {
         if (!formData[field]) {
           isValid = false;
+          newErrors[field] = "This field is required.";
         }
       });
     }
+
+    // Set errors if any
+    setErrors(newErrors);
 
     // Proceed to the next step if all required fields are valid
     if (isValid) {
       setCurrentStep(currentStep + 1);
     } else {
-      alert('Please fill out all required fields.');
+      alert("Please fill out all required fields.");
     }
   };
 
@@ -93,32 +159,41 @@ const Enroll = () => {
   };
 
   const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/enroll', formData);
-      console.log('Response:', response.data);
-      alert('Enrollment successful!');
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/enroll",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Response:", response.data);
+      alert("Enrollment successful!");
       // Reset form data...
     } catch (error) {
       if (error.response && error.response.status === 422) {
-          // Log the complete error response for debugging
-          console.error('Validation errors:', error.response.data.errors);
-          setErrors(error.response.data.errors);
-          alert('Please correct the errors highlighted above.');
+        console.error("Validation errors:", error.response.data.errors);
+        setErrors(error.response.data.errors);
+        alert("Please correct the errors highlighted above.");
       } else {
-          console.error('Error during enrollment:', error);
-          alert('Enrollment failed. Please check your information.');
+        console.error("Error during enrollment:", error);
+        alert("Enrollment failed. Please check your information.");
       }
-  }
+    }
   };
 
   return (
     <div>
       {/* Step Indicator */}
       <div className="step-indicator">
-        <span className={currentStep === 1 ? 'active-step' : ''}></span>
-        <span className={currentStep === 2 ? 'active-step' : ''}></span>
-        <span className={currentStep === 3 ? 'active-step' : ''}></span>
-        <span className={currentStep === 4 ? 'active-step' : ''}></span>
+        <span className={currentStep === 1 ? "active-step" : ""}></span>
+        <span className={currentStep === 2 ? "active-step" : ""}></span>
+        <span className={currentStep === 3 ? "active-step" : ""}></span>
+        <span className={currentStep === 4 ? "active-step" : ""}></span>
       </div>
 
       {/* Step 1: Basic Info */}
@@ -135,8 +210,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.email && <span className="error">{errors.email[0]}</span>} {/* Display error here */}
-            <label htmlFor="studentNumber">Student Number</label>
+            {errors.email && <span className="error">{errors.email}</span>}{" "}
+            {/* Display error here */}
+            <label htmlFor="studentNumber">Student Number</label>{" "}
             <input
               type="text"
               id="studentNumber"
@@ -145,9 +221,11 @@ const Enroll = () => {
               value={formData.studentNumber}
               onChange={handleChange}
               required
-            />
-            {errors.studentNumber && <span className="error">{errors.studentNumber[0]}</span>} {/* Display error here */}
-
+            />{" "}
+            {errors.studentNumber && (
+              <span className="error">{errors.studentNumber}</span>
+            )}{" "}
+            {/* Display error here */}
             <label htmlFor="lastName">Last Name</label>
             <input
               type="text"
@@ -158,7 +236,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.lastName && <span className="error">{errors.lastName[0]}</span>}
+            {errors.lastName && (
+              <span className="error">{errors.lastName[0]}</span>
+            )}
             <label htmlFor="firstName">First Name</label>
             <input
               type="text"
@@ -169,8 +249,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.firstName && <span className="error">{errors.firstName[0]}</span>}
-
+            {errors.firstName && (
+              <span className="error">{errors.firstName[0]}</span>
+            )}
             <label htmlFor="middleName">Middle Name</label>
             <input
               type="text"
@@ -181,8 +262,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.middleName && <span className="error">{errors.middleName[0]}</span>}
-
+            {errors.middleName && (
+              <span className="error">{errors.middleName[0]}</span>
+            )}
             <label htmlFor="sex">Sex</label>
             <select
               id="sex"
@@ -197,7 +279,6 @@ const Enroll = () => {
               <option value="Female">Female</option>
             </select>
             {errors.sex && <span className="error">{errors.sex[0]}</span>}
-
             <label htmlFor="contactNumber">Contact Number</label>
             <input
               type="text"
@@ -208,8 +289,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.contactNumber && <span className="error">{errors.contactNumber[0]}</span>}
-
+            {errors.contactNumber && (
+              <span className="error">{errors.contactNumber[0]}</span>
+            )}
             <label htmlFor="facebookLink">Facebook Link</label>
             <input
               type="text"
@@ -219,7 +301,10 @@ const Enroll = () => {
               value={formData.facebookLink}
               onChange={handleChange}
             />
-            {errors.facebookLink && <span className="error">{errors.facebookLink[0]}</span>} {/* Display error here */}
+            {errors.facebookLink && (
+              <span className="error">{errors.facebookLink[0]}</span>
+            )}{" "}
+            {/* Display error here */}
             <label htmlFor="birthdate">Birthdate</label>
             <input
               type="date"
@@ -230,9 +315,15 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.birthdate && <span className="error">{errors.birthdate[0]}</span>}
-            <div className='buttons-next'>
-              <button className='nextButton' type="button" onClick={handleNextStep}>
+            {errors.birthdate && (
+              <span className="error">{errors.birthdate[0]}</span>
+            )}
+            <div className="buttons-next">
+              <button
+                className="nextButton"
+                type="button"
+                onClick={handleNextStep}
+              >
                 Next Step
               </button>
             </div>
@@ -254,7 +345,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.guardianName && <span className="error">{errors.guardianName[0]}</span>}
+            {errors.guardianName && (
+              <span className="error">{errors.guardianName[0]}</span>
+            )}
             <label htmlFor="guardianPhone">Guardian's Phone Number</label>
             <input
               type="text"
@@ -265,7 +358,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.guardianPhone && <span className="error">{errors.guardianPhone[0]}</span>}
+            {errors.guardianPhone && (
+              <span className="error">{errors.guardianPhone[0]}</span>
+            )}
 
             <label htmlFor="religion">Religion</label>
             <input
@@ -277,7 +372,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.religion && <span className="error">{errors.religion[0]}</span>}
+            {errors.religion && (
+              <span className="error">{errors.religion[0]}</span>
+            )}
             <label htmlFor="previousSection">Previous Section</label>
             <select
               id="previousSection"
@@ -310,16 +407,26 @@ const Enroll = () => {
               <option value="3-6">3-6</option>
               <option value="3-7">3-7</option>
             </select>
-            {errors.previousSection && <span className="error">{errors.previousSection[0]}</span>}
+            {errors.previousSection && (
+              <span className="error">{errors.previousSection[0]}</span>
+            )}
 
-              <div className='buttons-next'>
-                <button className='previousButton' type="button" onClick={handlePreviousStep}>
-                  Previous Step
-                </button>
-                <button className='nextButton' type="button" onClick={handleNextStep}>
-                  Next Step
-                </button>
-              </div>
+            <div className="buttons-next">
+              <button
+                className="previousButton"
+                type="button"
+                onClick={handlePreviousStep}
+              >
+                Previous Step
+              </button>
+              <button
+                className="nextButton"
+                type="button"
+                onClick={handleNextStep}
+              >
+                Next Step
+              </button>
+            </div>
           </form>
         </div>
       )}
@@ -338,8 +445,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.houseNumber && <span className="error">{errors.houseNumber[0]}</span>}
-
+            {errors.houseNumber && (
+              <span className="error">{errors.houseNumber[0]}</span>
+            )}
             <label htmlFor="street">Street</label>
             <input
               type="text"
@@ -351,7 +459,6 @@ const Enroll = () => {
               required
             />
             {errors.street && <span className="error">{errors.street[0]}</span>}
-
             <label htmlFor="subdivision">Subdivision</label>
             <input
               type="text"
@@ -361,8 +468,9 @@ const Enroll = () => {
               value={formData.subdivision}
               onChange={handleChange}
             />
-            {errors.subdivision && <span className="error">{errors.subdivision[0]}</span>}
-
+            {errors.subdivision && (
+              <span className="error">{errors.subdivision[0]}</span>
+            )}
             <label htmlFor="barangay">Barangay</label>
             <input
               type="text"
@@ -373,8 +481,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.barangay && <span className="error">{errors.barangay[0]}</span>}
-
+            {errors.barangay && (
+              <span className="error">{errors.barangay[0]}</span>
+            )}
             <label htmlFor="municipality">Municipality</label>
             <input
               type="text"
@@ -385,8 +494,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.municipality && <span className="error">{errors.municipality[0]}</span>}
-
+            {errors.municipality && (
+              <span className="error">{errors.municipality[0]}</span>
+            )}
             <label htmlFor="zipCode">Zip Code</label>
             <input
               type="text"
@@ -397,16 +507,26 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.zipCode && <span className="error">{errors.zipCode[0]}</span>}
+            {errors.zipCode && (
+              <span className="error">{errors.zipCode[0]}</span>
+            )}
 
-              <div className='buttons-next'>
-                <button className='previousButton' type="button" onClick={handlePreviousStep}>
-                  Previous Step
-                </button>
-                <button className='nextButton' type="button" onClick={handleNextStep}>
-                  Next Step
-                </button>
-              </div>
+            <div className="buttons-next">
+              <button
+                className="previousButton"
+                type="button"
+                onClick={handlePreviousStep}
+              >
+                Previous Step
+              </button>
+              <button
+                className="nextButton"
+                type="button"
+                onClick={handleNextStep}
+              >
+                Next Step
+              </button>
+            </div>
           </form>
         </div>
       )}
@@ -415,10 +535,6 @@ const Enroll = () => {
       {currentStep === 4 && (
         <div className="enroll-step">
           <form className="enroll-form">
-          <div className="qr-container">
-              <img src={qrcodeImage} alt="QR Code" className="qr-image" />
-              <p>Mobile Number: 09XX-XXX-XXXX</p>
-            </div>
             <label htmlFor="mobileNumber">Mobile Number</label>
             <input
               type="text"
@@ -429,9 +545,10 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.mobileNumber && <span className="error">{errors.mobileNumber[0]}</span>}
-
-            <label htmlFor="senderName">Sender's Name</label>
+            {errors.mobileNumber && (
+              <span className="error">{errors.mobileNumber[0]}</span>
+            )}
+            <label htmlFor="senderName">Sender Name</label>
             <input
               type="text"
               id="senderName"
@@ -441,8 +558,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.senderName && <span className="error">{errors.senderName[0]}</span>}
-
+            {errors.senderName && (
+              <span className="error">{errors.senderName[0]}</span>
+            )}
             <label htmlFor="referenceNumber">Reference Number</label>
             <input
               type="text"
@@ -453,8 +571,9 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.referenceNumber && <span className="error">{errors.referenceNumber[0]}</span>}
-
+            {errors.referenceNumber && (
+              <span className="error">{errors.referenceNumber[0]}</span>
+            )}
             <label htmlFor="amount">Amount</label>
             <input
               type="text"
@@ -467,11 +586,19 @@ const Enroll = () => {
             />
             {errors.amount && <span className="error">{errors.amount[0]}</span>}
 
-            <div className='buttons-next'>
-              <button className='previousButton' type="button" onClick={handlePreviousStep}>
+            <div className="buttons-next">
+              <button
+                className="previousButton"
+                type="button"
+                onClick={handlePreviousStep}
+              >
                 Previous Step
               </button>
-              <button className='nextButton' type="button" onClick={handleSubmit}>
+              <button
+                className="nextButton"
+                type="button"
+                onClick={handleSubmit}
+              >
                 Submit
               </button>
             </div>

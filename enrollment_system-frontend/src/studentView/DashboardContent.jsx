@@ -20,13 +20,11 @@ const Schedule = () => {
       try {
         const response = await axios.get(
           "http://127.0.0.1:8000/api/notifications"
-        ); // Fetch all notifications
+        );
         console.log("Fetched Notifications:", response.data);
 
-        // Get current date in YYYY-MM-DD format
         const today = new Date().toISOString().split("T")[0];
 
-        // Filter notifications by today's date using created_at field
         const filteredNotifications = response.data.filter((notification) => {
           if (notification.created_at) {
             try {
