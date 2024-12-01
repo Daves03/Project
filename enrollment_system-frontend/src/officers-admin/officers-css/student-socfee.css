@@ -84,3 +84,75 @@
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: #fff;
+    width: 80%; 
+    max-width: 1200px; 
+    height: 70%;
+    overflow-y: auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+  }
+  
+  .modal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    text-align: center;
+  }
+  
+  .modal-table th,
+  .modal-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .modal-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .modal-table input {
+    width: 95%;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+  
+  .modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .modal-actions button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .modal-actions button:hover {
+    background-color: #f4f4f4;
+  }
+  
