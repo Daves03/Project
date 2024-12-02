@@ -6,6 +6,7 @@ import axios from "axios";
 const Enroll = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
+    status: "",
     email: "",
     studentNumber: "",
     lastName: "",
@@ -32,13 +33,14 @@ const Enroll = () => {
   });
   const [errors, setErrors] = useState({});
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const [showOnlyFirstStep, setShowOnlyFirstStep] = useState(false);
 
   useEffect(() => {
     const fetchLoggedInUser = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/api/user", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you're using a token-based authentication
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
         setLoggedInUser(response.data);
@@ -50,14 +52,29 @@ const Enroll = () => {
     fetchLoggedInUser();
   }, []);
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData({ ...formData, [name]: value });
+
+    // Handle visibility for Transferee and Freshmen
+    if (name === "status" && (value === "transferee" || value === "freshmen")) {
+      setShowOnlyFirstStep(true);
+    } else if (name === "status") {
+      setShowOnlyFirstStep(false);
+    }
+  };
 
   const handleNextStep = () => {
+    if (showOnlyFirstStep) {
+      alert("Please complete the requirements at the bottom of the form.");
+      return;
+    }
+
     let isValid = true;
     const newErrors = {};
 
-    // Basic Info Validation (Step 1)
+    // Validate fields based on the current step
     if (currentStep === 1) {
       const requiredFields = [
         "email",
@@ -76,8 +93,7 @@ const Enroll = () => {
         }
       });
 
-      // Validate email and student number against users data
-
+      // Validate email and student number
       if (loggedInUser) {
         if (
           loggedInUser.email.trim().toLowerCase() !==
@@ -93,60 +109,8 @@ const Enroll = () => {
       }
     }
 
-    // Guardian Info Validation (Step 2)
-    if (currentStep === 2) {
-      const requiredFields = [
-        "guardianName",
-        "guardianPhone",
-        "religion",
-        "previousSection",
-      ];
-      requiredFields.forEach((field) => {
-        if (!formData[field]) {
-          isValid = false;
-          newErrors[field] = "This field is required.";
-        }
-      });
-    }
-
-    // Course Details Validation (Step 3)
-    if (currentStep === 3) {
-      const requiredFields = [
-        "houseNumber",
-        "street",
-        "subdivision",
-        "barangay",
-        "municipality",
-        "zipCode",
-      ];
-      requiredFields.forEach((field) => {
-        if (!formData[field]) {
-          isValid = false;
-          newErrors[field] = "This field is required.";
-        }
-      });
-    }
-
-    // Payment Info Validation (Step 4)
-    if (currentStep === 4) {
-      const requiredFields = [
-        "mobileNumber",
-        "senderName",
-        "referenceNumber",
-        "amount",
-      ];
-      requiredFields.forEach((field) => {
-        if (!formData[field]) {
-          isValid = false;
-          newErrors[field] = "This field is required.";
-        }
-      });
-    }
-
-    // Set errors if any
     setErrors(newErrors);
 
-    // Proceed to the next step if all required fields are valid
     if (isValid) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -159,24 +123,20 @@ const Enroll = () => {
   };
 
   const handleSubmit = async () => {
-    const token = localStorage.getItem("token");
-
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/enroll",
         formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
       console.log("Response:", response.data);
       alert("Enrollment successful!");
-      // Reset form data...
     } catch (error) {
       if (error.response && error.response.status === 422) {
-        console.error("Validation errors:", error.response.data.errors);
         setErrors(error.response.data.errors);
         alert("Please correct the errors highlighted above.");
       } else {
@@ -191,15 +151,35 @@ const Enroll = () => {
       {/* Step Indicator */}
       <div className="step-indicator">
         <span className={currentStep === 1 ? "active-step" : ""}></span>
-        <span className={currentStep === 2 ? "active-step" : ""}></span>
-        <span className={currentStep === 3 ? "active-step" : ""}></span>
-        <span className={currentStep === 4 ? "active-step" : ""}></span>
+        {!showOnlyFirstStep && (
+          <>
+            <span className={currentStep === 2 ? "active-step" : ""}></span>
+            <span className={currentStep === 3 ? "active-step" : ""}></span>
+            <span className={currentStep === 4 ? "active-step" : ""}></span>
+          </>
+        )}
       </div>
 
       {/* Step 1: Basic Info */}
       {currentStep === 1 && (
         <div className="enroll-step">
           <form className="enroll-form">
+            <label htmlFor="status">Status</label>
+            <select
+              id="status"
+              name="status"
+              className="inputEnroll"
+              value={formData.status}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select</option>
+              <option value="regular">Regular</option>
+              <option value="iregular">Iregular</option>
+              <option value="transferee">Transferee</option>
+              <option value="freshmen">Freshmen</option>
+            </select>
+            {errors.status && <span className="error">{errors.status}</span>}
             <label htmlFor="email">Email</label>
             <input
               type="email"
@@ -212,19 +192,23 @@ const Enroll = () => {
             />
             {errors.email && <span className="error">{errors.email}</span>}{" "}
             {/* Display error here */}
-            <label htmlFor="studentNumber">Student Number</label>{" "}
-            <input
-              type="text"
-              id="studentNumber"
-              name="studentNumber"
-              className="inputEnroll"
-              value={formData.studentNumber}
-              onChange={handleChange}
-              required
-            />{" "}
-            {errors.studentNumber && (
-              <span className="error">{errors.studentNumber}</span>
-            )}{" "}
+            {formData.status !== "transferee" && formData.status !== "freshmen" && (
+              <>
+                <label htmlFor="studentNumber">Student Number</label>
+                <input
+                  type="text"
+                  id="studentNumber"
+                  name="studentNumber"
+                  className="inputEnroll"
+                  value={formData.studentNumber}
+                  onChange={handleChange}
+                  required
+                />
+                {errors.studentNumber && (
+                  <span className="error">{errors.studentNumber}</span>
+                )}
+              </>
+            )}
             {/* Display error here */}
             <label htmlFor="lastName">Last Name</label>
             <input
@@ -318,13 +302,73 @@ const Enroll = () => {
             {errors.birthdate && (
               <span className="error">{errors.birthdate[0]}</span>
             )}
+            {formData.status === "transferee" && (
+              <div className="transferee-requirements">
+                <p>
+                  <strong>Requirements:</strong>
+                  <br />
+                  - Application Form
+                  <br />
+                  - Transcript of Records (TOR)
+                  <br />
+                  - Honorable Dismissal
+                  <br />
+                  - Certificate of Good Moral
+                  <br />
+                  - NBI/Police Clearance
+                  <br />
+                  - Medical Results
+                  <br />
+                  - Medical Clearance From Campus Nurse
+                  <br />
+                  - Equivalency Form
+                  <br />
+                </p>
+              </div>
+            )}
+
+            {formData.status === "freshmen" && (
+              <div className="freshmen-requirements">
+                <p>
+                  <strong>Requirements:</strong>
+                  <br />
+                  - Application Form
+                  <br />
+                  - Medical Certificate
+                  <br />
+                  - Report Card
+                  <br />
+                  - Certificate of Good Moral
+                  <br />
+                  - Notice of Admission
+                  <br />
+                  - Brown Envelope (A4)
+                </p>
+              </div>
+            )}
+            <br />
+            {/* Download Link */}
+            {(formData.status === "transferee" || formData.status === "freshmen") && (
+              <div className="admission-download">
+                <a
+                  href="/path/to/admission-form.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="download-link"
+                >
+                  Admission Form Download
+                </a>
+              </div>
+            )}
+            <br />
+            {/* Button */}
             <div className="buttons-next">
               <button
                 className="nextButton"
                 type="button"
                 onClick={handleNextStep}
               >
-                Next Step
+                {showOnlyFirstStep ? "Submit" : "Next Step"}
               </button>
             </div>
           </form>
