@@ -1,21 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./officers-css/student-socfee.css";
 
 const EnrollStudent = () => {
   const [showModal, setShowModal] = useState(false);
+  const [students, setStudents] = useState([]);
   const [editableData, setEditableData] = useState({
-    studentName: "Raven Ampere",
-    studentNumber: "0000000000",
-    yearLevel: "3rd Year",
-    section: "3-1",
-    course: "BSCS",
+    id: null,
+    studentName: "",
+    studentNumber: "",
+    yearLevel: "",
+    section: "",
+    course: "",
     socFees: {
-      firstYear: "paid",
-      secondYear: "paid",
-      thirdYear: "paid",
+      firstYear: "not paid",
+      secondYear: "not paid",
+      thirdYear: "not paid",
       fourthYear: "not paid",
     },
   });
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/student-soc-fees"
+        );
+        setStudents(response.data);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditableData({ ...editableData, [name]: value });
+  };
 
   const handleSocFeeChange = (e, year) => {
     setEditableData({
@@ -27,10 +50,66 @@ const EnrollStudent = () => {
     });
   };
 
-  const handleSave = () => {
-    console.log("Saved Data:", editableData);
-    setShowModal(false);
-    // Add logic to update the main table with editableData
+  const handleSave = async () => {
+    try {
+      const studentData = {
+        student_name: editableData.studentName,
+        student_number: editableData.studentNumber,
+        year_level: editableData.yearLevel,
+        section: editableData.section,
+        course: editableData.course,
+        soc_fee_first_year: editableData.socFees.firstYear,
+        soc_fee_second_year: editableData.socFees.secondYear,
+        soc_fee_third_year: editableData.socFees.thirdYear,
+        soc_fee_fourth_year: editableData.socFees.fourthYear,
+      };
+
+      console.log("Saving data:", studentData);
+
+      if (editableData.id) {
+        await axios.put(
+          `http://127.0.0.1:8000/api/student-soc-fees/${editableData.id}`,
+          studentData
+        );
+      } else {
+        await axios.post(
+          "http://127.0.0.1:8000/api/student-soc-fees",
+          studentData
+        );
+      }
+
+      console.log("Data saved successfully");
+
+      setShowModal(false);
+      setEditableData({
+        id: null,
+        studentName: "",
+        studentNumber: "",
+        yearLevel: "",
+        section: "",
+        course: "",
+        socFees: {
+          firstYear: "",
+          secondYear: "",
+          thirdYear: "",
+          fourthYear: "",
+        },
+      });
+
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/student-soc-fees"
+      );
+      setStudents(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        console.error("Validation errors:", error.response.data.errors);
+        alert(
+          "Validation errors: " + JSON.stringify(error.response.data.errors)
+        );
+      } else {
+        console.error("Error saving student data:", error);
+      }
+    }
   };
 
   return (
@@ -57,10 +136,7 @@ const EnrollStudent = () => {
           <option value="4">4th Year</option>
         </select>
 
-        <button
-          className="add-btn-officers"
-          onClick={() => setShowModal(true)}
-        >
+        <button className="add-btn-officers" onClick={() => setShowModal(true)}>
           Add Paid Student
         </button>
       </div>
@@ -74,31 +150,56 @@ const EnrollStudent = () => {
               <th>Status</th>
               <th>Year Level</th>
               <th>Section</th>
-              <th>Course</th>
+              <th>Program</th>
               <th>1st year (SocFee)</th>
               <th>2nd year (SocFee)</th>
               <th>3rd year (SocFee)</th>
               <th>4th year (SocFee)</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>{editableData.studentName}</td>
-              <td>{editableData.studentNumber}</td>
-              <td>Regular</td>
-              <td>{editableData.yearLevel}</td>
-              <td>{editableData.section}</td>
-              <td>{editableData.course}</td>
-              <td>{editableData.socFees.firstYear}</td>
-              <td>{editableData.socFees.secondYear}</td>
-              <td>{editableData.socFees.thirdYear}</td>
-              <td>{editableData.socFees.fourthYear}</td>
-            </tr>
+            {students.map((student) => (
+              <tr key={student.id}>
+                <td>{student.student_name}</td>
+                <td>{student.student_number}</td>
+                <td>Regular</td>
+                <td>{student.year_level}</td>
+                <td>{student.section}</td>
+                <td>{student.course}</td>
+                <td>{student.soc_fee_first_year}</td>
+                <td>{student.soc_fee_second_year}</td>
+                <td>{student.soc_fee_third_year}</td>
+                <td>{student.soc_fee_fourth_year}</td>
+                <td>
+                  <button
+                    onClick={() => {
+                      setEditableData({
+                        id: student.id,
+                        studentName: student.student_name,
+                        studentNumber: student.student_number,
+                        yearLevel: student.year_level,
+                        section: student.section,
+                        course: student.course,
+                        socFees: {
+                          firstYear: student.soc_fee_first_year,
+                          secondYear: student.soc_fee_second_year,
+                          thirdYear: student.soc_fee_third_year,
+                          fourthYear: student.soc_fee_fourth_year,
+                        },
+                      });
+                      setShowModal(true);
+                    }}
+                  >
+                    Edit
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
-      {/* Modal */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -110,7 +211,7 @@ const EnrollStudent = () => {
                   <th>Student Number</th>
                   <th>Year Level</th>
                   <th>Section</th>
-                  <th>Course</th>
+                  <th>Program</th>
                   <th>1st Year</th>
                   <th>2nd Year</th>
                   <th>3rd Year</th>
@@ -119,38 +220,87 @@ const EnrollStudent = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td>{editableData.studentName}</td>
-                  <td>{editableData.studentNumber}</td>
-                  <td>{editableData.yearLevel}</td>
-                  <td>{editableData.section}</td>
-                  <td>{editableData.course}</td>
                   <td>
                     <input
                       type="text"
+                      name="studentName"
+                      value={editableData.studentName}
+                      onChange={handleInputChange}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      name="studentNumber"
+                      value={editableData.studentNumber}
+                      onChange={handleInputChange}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      name="yearLevel"
+                      value={editableData.yearLevel}
+                      onChange={handleInputChange}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      name="section"
+                      value={editableData.section}
+                      onChange={handleInputChange}
+                    />
+                  </td>
+                  <td>
+                    <select
+                      name="course"
+                      value={editableData.course}
+                      onChange={handleInputChange}
+                    >
+                      <option value="Bachelor of Science in Computer Science">
+                        Bachelor of Science in Computer Science
+                      </option>
+                      <option value="Bachelor of Science in Information Technology">
+                        Bachelor of Science in Information Technology
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <select
                       value={editableData.socFees.firstYear}
                       onChange={(e) => handleSocFeeChange(e, "firstYear")}
-                    />
+                    >
+                      <option value="paid">Paid</option>
+                      <option value="not paid">Not Paid</option>
+                    </select>
                   </td>
                   <td>
-                    <input
-                      type="text"
+                    <select
                       value={editableData.socFees.secondYear}
                       onChange={(e) => handleSocFeeChange(e, "secondYear")}
-                    />
+                    >
+                      <option value="paid">Paid</option>
+                      <option value="not paid">Not Paid</option>
+                    </select>
                   </td>
                   <td>
-                    <input
-                      type="text"
+                    <select
                       value={editableData.socFees.thirdYear}
                       onChange={(e) => handleSocFeeChange(e, "thirdYear")}
-                    />
+                    >
+                      <option value="paid">Paid</option>
+                      <option value="not paid">Not Paid</option>
+                    </select>
                   </td>
                   <td>
-                    <input
-                      type="text"
+                    <select
                       value={editableData.socFees.fourthYear}
                       onChange={(e) => handleSocFeeChange(e, "fourthYear")}
-                    />
+                    >
+                      <option value="paid">Paid</option>
+                      <option value="not paid">Not Paid</option>
+                    </select>
                   </td>
                 </tr>
               </tbody>

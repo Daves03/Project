@@ -8,6 +8,15 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\StudentSocFeeController;
+
+Route::get('/student-soc-fees', [StudentSocFeeController::class, 'index']);
+Route::post('/student-soc-fees', [StudentSocFeeController::class, 'store']);
+Route::get('/student-soc-fees/{id}', [StudentSocFeeController::class, 'show']);
+Route::put('/student-soc-fees/{id}', [StudentSocFeeController::class, 'update']);
+Route::delete('/student-soc-fees/{id}', [StudentSocFeeController::class, 'destroy']);
+
+
 
 Route::post('/notifications', [NotificationController::class, 'store']);
 Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
