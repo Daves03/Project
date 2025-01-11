@@ -3,12 +3,16 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Controllers\SanctumController;
-
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\StudentSocFeeController;
+use App\Http\Controllers\StudentDetailsController; 
+
+
+Route::middleware('auth:sanctum')->get('/student-details', [StudentDetailsController::class, 'getStudentDetails']);
+Route::middleware('auth:sanctum')->get('/enrollment-student-details', [StudentController::class, 'fetchEnrollmentStudentDetails']);
 
 Route::get('/student-soc-fees', [StudentSocFeeController::class, 'index']);
 Route::post('/student-soc-fees', [StudentSocFeeController::class, 'store']);
@@ -26,13 +30,15 @@ Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum'); 
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/enroll', [StudentController::class, 'enroll']);
 });
 
-
+Route::post('/enrollments/{id}/faculty-approve', [StudentController::class, 'approveByFaculty']); 
+Route::post('/enrollments/{id}/faculty-decline', [StudentController::class, 'declineByFaculty']);
 Route::get('/students', [StudentController::class, 'getAllStudents']);
 
 Route::post('/students/{id}/decline-payment', [StudentController::class, 'declinePayment']);
@@ -43,7 +49,7 @@ Route::post('/enrollments/{id}/approve', [StudentController::class, 'approveByOf
 
 Route::get('/enrollments', [StudentController::class, 'getFacultyEnrollments']);
 
-// In routes/api.php
+
 Route::get('/students', [StudentController::class, 'getStudents']);
 
 
@@ -68,5 +74,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+
+
+
+Route::post('/enrollments/{id}/faculty-approve', [StudentController::class, 'approveByFaculty']);
+Route::post('/enrollments/{id}/faculty-decline', [StudentController::class, 'declineByFaculty']);
+Route::get('/admin/enrollments', [StudentController::class, 'getAdminEnrollments']);
+
+Route::post('/enrollments/{id}/update-status', [StudentController::class, 'updateStudentStatus']);
+
+
+Route::post('/enrollments/{id}/admin-approve', [StudentController::class, 'approveByAdmin']);
+Route::post('/enrollments/{id}/admin-decline', [StudentController::class,'declineByAdmin']);
+
+Route::get('/approved-enrollments', [StudentController::class, 'getApprovedEnrollments']);
 
 

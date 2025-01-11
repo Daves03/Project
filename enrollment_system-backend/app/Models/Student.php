@@ -10,8 +10,8 @@ class Student extends Model
     use HasFactory;
 
     protected $fillable = [
-        'email', 'student_number', 'last_name', 'first_name', 'middle_name',
-        'sex', 'contact_number', 'facebook_link', 'birthdate', 'status', 'user_id'
+        'email', 'student_number', 'last_name', 'first_name', 'middle_name','program', 'year_level', 'semester', 'student_status',
+        'sex', 'contact_number', 'facebook_link', 'birthdate', 'status', 'faculty_status','admin_status', 'user_id'
     ];
 
     // Relationship to Guardian

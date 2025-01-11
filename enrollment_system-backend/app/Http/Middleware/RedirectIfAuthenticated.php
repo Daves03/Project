@@ -1,8 +1,9 @@
 <?php
 
+// In app/Http/Middleware/RedirectIfAuthenticated.php
+
 namespace App\Http\Middleware;
 
-use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,10 +22,30 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                $user = Auth::guard($guard)->user();
+                return $this->redirectToRoleBasedRoute($user);
             }
         }
 
         return $next($request);
+    }
+
+    /**
+     * Redirect to the appropriate route based on user role.
+     */
+    protected function redirectToRoleBasedRoute($user)
+    {
+        switch ($user->role) {
+            case 'admin':
+                return redirect('http://localhost:5173/admin');
+            case 'student':
+                return redirect('http://localhost:5173/home');
+            case 'officers':
+                return redirect('http://localhost:5173/officers');
+            case 'faculty':
+                return redirect('http://localhost:5173/faculty');
+            default:
+                return redirect('http://localhost:5173');
+        }
     }
 }

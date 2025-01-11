@@ -1,12 +1,16 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Enrollment from "./EnrollmentFormContent";
 import SocFee from "./StudentSocFee";
 import "./officers-css/officers.css";
 import enrollmentIcon from "./assets-officers/enrollment-icon.png";
 import billingIcon from "./assets-officers/billing-icon.png";
+import logoutIcon from "../assets/logout.png";
+import axios from "axios";
 
 const OfficersPage = () => {
   const [activePage, setActivePage] = useState("enrollment");
+  const navigate = useNavigate();
 
   const renderContent = () => {
     switch (activePage) {
@@ -16,6 +20,36 @@ const OfficersPage = () => {
         return <SocFee />;
       default:
         return <Enrollment />;
+    }
+  };
+
+  const handleLogout = async () => {
+    const isConfirmed = window.confirm("Are you sure you want to log out?");
+    if (!isConfirmed) {
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      await axios.post(
+        "http://localhost:8000/api/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      // alert("Logged out successfully!");
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("Error logging out. Please try again.");
     }
   };
 
@@ -43,6 +77,17 @@ const OfficersPage = () => {
           Society Fee
         </li>
       </ul>
+
+      <div className="logout-container">
+        <button className="logout-button" onClick={handleLogout}>
+          <img
+            src={logoutIcon}
+            alt="Logout"
+            style={{ width: "40px", height: "40px" }}
+            draggable="false"
+          />
+        </button>
+      </div>
     </div>
   );
 

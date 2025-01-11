@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\StudentDetails;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
@@ -17,28 +19,32 @@ class StudentController extends Controller
     try { $user = $request->user(); if (!$user) { throw new \Exception('User not authenticated'); } Log::info('Authenticated user:', ['user_id' => $user->id, 'email' => $user->email]); } catch (\Exception $e) { Log::error('Authentication Error: ' . $e->getMessage()); return response()->json(['error' => 'Authentication error occurred.'], 401); // 401 Unauthorized 
         }
 
-    $validatedData = $request->validate([
-        'email' => 'required|email',
-        'studentNumber' => 'required|string',
-        'lastName' => 'required|string',
-        'firstName' => 'required|string',
-        'middleName' => 'required|string',
-        'sex' => 'required|string',
-        'contactNumber' => 'required|string',
-        'birthdate' => 'required|date',
-        'guardianName' => 'required|string',
-        'guardianPhone' => 'required|string',
-        'religion' => 'required|string',
-        'houseNumber' => 'required|string',
-        'street' => 'required|string',
-        'subdivision' => 'nullable|string',
-        'barangay' => 'required|string',
-        'municipality' => 'required|string',
-        'zipCode' => 'required|string',
-        'mobileNumber' => 'required|string',
-        'senderName' => 'required|string',
-        'referenceNumber' => 'required|string',
-        'amount' => 'required|numeric',
+        $validatedData = $request->validate([
+            'email' => 'required|email',
+            'studentNumber' => 'required|string',
+            'lastName' => 'required|string',
+            'firstName' => 'required|string',
+            'middleName' => 'required|string',
+            'sex' => 'required|string',
+            'contactNumber' => 'required|string',
+            'birthdate' => 'required|date',
+            'guardianName' => 'required|string',
+            'guardianPhone' => 'required|string',
+            'religion' => 'required|string',
+            'houseNumber' => 'required|string',
+            'street' => 'required|string',
+            'subdivision' => 'required|string',
+            'barangay' => 'required|string',
+            'municipality' => 'required|string',
+            'zipCode' => 'required|string',
+            'mobileNumber' => 'required|string',
+            'senderName' => 'required|string',
+            'referenceNumber' => 'required|string',
+            'amount' => 'required|numeric',
+            'yearLevel' => 'required|in:First Year,Second Year,Third Year,Fourth Year',
+            'semester' => 'required|string', 
+            'studentstatus' => 'required|in:Regular, Irregular, transferee, freshmen',
+            'program' => 'required|string|in:Bachelor of Science in Computer Science,Bachelor of Science in Information Technology',
     ]);
 
     $validatedData['student_number'] = $validatedData['studentNumber'];
@@ -51,6 +57,13 @@ class StudentController extends Controller
     unset($validatedData['middleName']);
     $validatedData['contact_number'] = $validatedData['contactNumber'];
     unset($validatedData['contactNumber']);
+
+    $validatedData['year_level'] = $validatedData['yearLevel'];
+    unset($validatedData['yearLevel']);
+    $validatedData['semester'] = $validatedData['semester'];
+    $validatedData['student_status'] = $validatedData['studentstatus'];
+    $validatedData['program'] = $validatedData['program'];
+    
 
     // Corrected line
     $validatedData['user_id'] = $user->id;
@@ -169,15 +182,17 @@ class StudentController extends Controller
 
     public function getFacultyEnrollments()
     {
-        $enrollments = Student::where('status', 'officer_approved') 
-            ->get(['id', 'first_name', 'last_name', 'student_number', 'status']); 
+        $enrollments = Student::where('status', 'officer_approved')
+            ->where('faculty_status', '!=', 'faculty_approved')
+            ->get(['id', 'first_name', 'last_name', 'student_number', 'status', 'faculty_status', 'program', 'year_level', 'semester']);
         
         return response()->json($enrollments);
     }
+    
 
     public function getStudents()
 {
-    $students = Student::with('payment') // Include the payment relationship
+    $students = Student::with('payment') 
         ->where('status', '!=', 'officer_approved')
         ->where('archived', false)
         ->get();
@@ -197,15 +212,119 @@ class StudentController extends Controller
         }
     }
 
-   public function getLoggedInUser(Request $request)
+    public function fetchEnrollmentStudentDetails() { $user = Auth::user(); $studentDetails = $user->studentDetails;  return response()->json($studentDetails);  }
+
+    
+    public function approveByFaculty($id)
 {
+    $enrollment = Student::findOrFail($id);
+    $enrollment->faculty_status = 'faculty_approved';
+    $enrollment->save();
+
+    return response()->json(['message' => 'Enrollment approved by faculty and forwarded to admin.']);
+}
+
+
+public function declineByFaculty($id)
+{
+    $enrollment = Student::findOrFail($id);
+    $enrollment->faculty_status = 'faculty_declined';
+    $enrollment->archived = true;
+    $enrollment->save();
+
+    return response()->json(['message' => 'Enrollment declined and archived by faculty.']);
+}
+
+// Example for logging in your controller
+public function getAdminEnrollments()
+{
+    $enrollments = Student::where('status', 'officer_approved')
+    ->where('admin_status', '!=', 'admin_approved')
+        ->where('faculty_status', 'faculty_approved')
+        ->get(['id', 'first_name', 'last_name', 'student_number', 'status', 'faculty_status', 'program', 'year_level', 'semester']);
+    
+    return response()->json($enrollments);
+}
+
+
+public function updateStudentStatus(Request $request, $id)
+{
+    $request->validate([
+        'student_status' => 'required|string|in:Regular,Irregular'
+    ]);
+
+    DB::beginTransaction();
+
     try {
-        $user = $request->user(); // Assuming you're using Laravel's authentication
-        return response()->json($user, 200);
+        // Find the student by ID
+        $student = Student::findOrFail($id);
+        $userId = $student->user_id; // Get the user ID
+
+        // Update student status in students table
+        $student->student_status = $request->student_status;
+        $student->save();
+
+        // Update student status in student_details table
+        $studentDetails = StudentDetails::where('user_id', $userId)->first();
+        if ($studentDetails) {
+            $studentDetails->student_status = $request->student_status;
+            $studentDetails->save();
+        }
+
+        DB::commit();
+        return response()->json(['message' => 'Student status updated successfully.']);
     } catch (\Exception $e) {
-        Log::error('Error fetching logged-in user: ' . $e->getMessage());
-        return response()->json(['error' => 'Error fetching logged-in user'], 500);
+        DB::rollBack();
+        return response()->json(['error' => 'Failed to update student status.'], 500);
     }
 }
+
+
+public function approveByAdmin($id)
+{
+    DB::beginTransaction();
+
+    try {
+        // Find the student by ID
+        $student = Student::findOrFail($id);
+
+        // Update student status in students table
+        $student->admin_status = 'admin_approved';
+        $student->save();
+        Log::info('Updated students table', ['student_id' => $id]);
+
+        // Update enrollment status in student_details table
+        $studentDetails = StudentDetails::where('user_id', $student->user_id)->first();
+        if ($studentDetails) {
+            $studentDetails->enrollment_status = 'Enrollment Approved';
+            $studentDetails->save();
+            Log::info('Updated student_details table', ['user_id' => $student->user_id]);
+        }
+
+        DB::commit();
+        return response()->json(['message' => 'Enrollment approved by admin.']);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Failed to approve enrollment', ['error' => $e->getMessage()]);
+        return response()->json(['error' => 'Failed to approve enrollment.'], 500);
+    }
+}
+
+
+
+public function getApprovedEnrollments()
+{
+    try {
+        $approvedEnrollments = StudentDetails::where('enrollment_status', 'Enrollment Approved')->get();
+        return response()->json($approvedEnrollments);
+    } catch (\Exception $e) {
+        Log::error('Failed to fetch approved enrollments', ['error' => $e->getMessage()]);
+        return response()->json(['error' => 'Failed to fetch approved enrollments.'], 500);
+    }
+}
+
+
+
+
 
 }

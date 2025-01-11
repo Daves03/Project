@@ -21,7 +21,7 @@ const Schedule = () => {
         const response = await axios.get(
           "http://127.0.0.1:8000/api/notifications"
         );
-        console.log("Fetched Notifications:", response.data);
+        // console.log("Fetched Notifications:", response.data);
 
         const today = new Date().toISOString().split("T")[0];
 
@@ -46,7 +46,7 @@ const Schedule = () => {
           }
         });
 
-        console.log("Filtered Notifications:", filteredNotifications);
+        // console.log("Filtered Notifications:", filteredNotifications);
 
         setNotifications(filteredNotifications);
       } catch (error) {
@@ -96,7 +96,7 @@ const Schedule = () => {
         )}
       </div>
 
-      <div className="table-container">
+      {/* <div className="table-container">
         <div className="header">
           <h2>Class Schedule: SY 2023-2024, 1st Trimester</h2>
         </div>
@@ -124,7 +124,7 @@ const Schedule = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
     </div>
   );
 };

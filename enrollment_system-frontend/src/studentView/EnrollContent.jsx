@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import "../css/enroll-student.css";
-import qrcodeImage from "../assets/qrcodeSample.jpg";
 import axios from "axios";
 
 const Enroll = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [isReadOnly, setIsReadOnly] = useState(true);
   const [formData, setFormData] = useState({
-    status: "",
+    studentstatus: "",
     email: "",
     studentNumber: "",
     lastName: "",
     firstName: "",
     middleName: "",
+    program: "",
+    yearLevel: "",
+    semester: "",
     sex: "",
     contactNumber: "",
     facebookLink: "",
@@ -36,31 +39,56 @@ const Enroll = () => {
   const [showOnlyFirstStep, setShowOnlyFirstStep] = useState(false);
 
   useEffect(() => {
-    const fetchLoggedInUser = async () => {
+    const fetchEnrollmentStudentDetails = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/user", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        setLoggedInUser(response.data);
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/enrollment-student-details",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const studentDetails = response.data;
+        // console.log(studentDetails); // Log the response data
+
+        // Populate form data with student details
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          studentstatus: studentDetails.student_status || "",
+          email: studentDetails.email || "",
+          studentNumber: studentDetails?.student_number || "",
+          firstName: studentDetails?.first_name || "",
+          lastName: studentDetails?.last_name || "",
+          middleName: studentDetails?.middle_name || "",
+          program: studentDetails?.course || "",
+          yearLevel: studentDetails?.year_level || "",
+          semester: studentDetails?.semester || "",
+          sex: studentDetails?.sex || "",
+          contactNumber: studentDetails?.phone || "",
+          birthdate: studentDetails?.birthdate || "",
+          guardianName: studentDetails?.guardian_name || "",
+          guardianPhone: studentDetails?.guardian_phone || "",
+        }));
       } catch (error) {
-        console.error("Error fetching logged-in user:", error);
+        console.error("Error fetching student details for enrollment:", error);
       }
     };
 
-    fetchLoggedInUser();
+    fetchEnrollmentStudentDetails();
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData({ ...formData, [name]: value });
 
     // Handle visibility for Transferee and Freshmen
-    if (name === "status" && (value === "transferee" || value === "freshmen")) {
+    if (
+      name === "studentstatus" &&
+      (value === "transferee" || value === "freshmen")
+    ) {
       setShowOnlyFirstStep(true);
-    } else if (name === "status") {
+    } else if (name === "studentstatus") {
       setShowOnlyFirstStep(false);
     }
   };
@@ -77,11 +105,15 @@ const Enroll = () => {
     // Validate fields based on the current step
     if (currentStep === 1) {
       const requiredFields = [
+        "studentstatus",
         "email",
         "studentNumber",
         "lastName",
         "firstName",
         "middleName",
+        "program",
+        "yearLevel",
+        "semester",
         "sex",
         "contactNumber",
         "birthdate",
@@ -94,19 +126,20 @@ const Enroll = () => {
       });
 
       // Validate email and student number
-      if (loggedInUser) {
-        if (
-          loggedInUser.email.trim().toLowerCase() !==
-            formData.email.trim().toLowerCase() ||
-          loggedInUser.student_number.trim() !== formData.studentNumber.trim()
-        ) {
-          isValid = false;
-          newErrors["email"] =
-            "Email or student number does not match your account.";
-          newErrors["studentNumber"] =
-            "Email or student number does not match your account.";
-        }
-      }
+      // if (loggedInUser) {
+      //   if (
+      //     loggedInUser.email.trim().toLowerCase() !==
+      //       formData.email.trim().toLowerCase() ||
+      //     loggedInUser.student_details?.student_number.trim() !==
+      //       formData.studentNumber.trim()
+      //   ) {
+      //     isValid = false;
+      //     newErrors["email"] =
+      //       "Email or student number does not match your account.";
+      //     newErrors["studentNumber"] =
+      //       "Email or student number does not match your account.";
+      //   }
+      // }
     }
 
     setErrors(newErrors);
@@ -123,6 +156,7 @@ const Enroll = () => {
   };
 
   const handleSubmit = async () => {
+    console.log("Form data being submitted:", formData);
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/enroll",
@@ -148,7 +182,6 @@ const Enroll = () => {
 
   return (
     <div>
-      {/* Step Indicator */}
       <div className="step-indicator">
         <span className={currentStep === 1 ? "active-step" : ""}></span>
         {!showOnlyFirstStep && (
@@ -160,22 +193,22 @@ const Enroll = () => {
         )}
       </div>
 
-      {/* Step 1: Basic Info */}
       {currentStep === 1 && (
         <div className="enroll-step">
           <form className="enroll-form">
-            <label htmlFor="status">Status</label>
+            <label htmlFor="studentstatus">Status</label>
             <select
-              id="status"
-              name="status"
+              id="studentstatus"
+              name="studentstatus"
               className="inputEnroll"
-              value={formData.status}
+              value={formData.studentstatus}
               onChange={handleChange}
+              data-readonly={isReadOnly ? "true" : "false"}
               required
             >
               <option value="">Select</option>
-              <option value="regular">Regular</option>
-              <option value="iregular">Iregular</option>
+              <option value="Regular">Regular</option>
+              <option value="Iregular">Iregular</option>
               <option value="transferee">Transferee</option>
               <option value="freshmen">Freshmen</option>
             </select>
@@ -188,28 +221,29 @@ const Enroll = () => {
               className="inputEnroll"
               value={formData.email}
               onChange={handleChange}
+              readOnly
               required
             />
-            {errors.email && <span className="error">{errors.email}</span>}{" "}
-            {/* Display error here */}
-            {formData.status !== "transferee" && formData.status !== "freshmen" && (
-              <>
-                <label htmlFor="studentNumber">Student Number</label>
-                <input
-                  type="text"
-                  id="studentNumber"
-                  name="studentNumber"
-                  className="inputEnroll"
-                  value={formData.studentNumber}
-                  onChange={handleChange}
-                  required
-                />
-                {errors.studentNumber && (
-                  <span className="error">{errors.studentNumber}</span>
-                )}
-              </>
-            )}
-            {/* Display error here */}
+            {errors.email && <span className="error">{errors.email}</span>}
+            {formData.studentstatus !== "transferee" &&
+              formData.studentstatus !== "freshmen" && (
+                <>
+                  <label htmlFor="studentNumber">Student Number</label>
+                  <input
+                    type="text"
+                    id="studentNumber"
+                    name="studentNumber"
+                    className="inputEnroll"
+                    value={formData.studentNumber}
+                    onChange={handleChange}
+                    readOnly
+                    required
+                  />
+                  {errors.studentNumber && (
+                    <span className="error">{errors.studentNumber}</span>
+                  )}
+                </>
+              )}
             <label htmlFor="lastName">Last Name</label>
             <input
               type="text"
@@ -218,10 +252,11 @@ const Enroll = () => {
               className="inputEnroll"
               value={formData.lastName}
               onChange={handleChange}
+              readOnly
               required
             />
             {errors.lastName && (
-              <span className="error">{errors.lastName[0]}</span>
+              <span className="error">{errors.lastName}</span>
             )}
             <label htmlFor="firstName">First Name</label>
             <input
@@ -231,10 +266,11 @@ const Enroll = () => {
               className="inputEnroll"
               value={formData.firstName}
               onChange={handleChange}
+              readOnly
               required
             />
             {errors.firstName && (
-              <span className="error">{errors.firstName[0]}</span>
+              <span className="error">{errors.firstName}</span>
             )}
             <label htmlFor="middleName">Middle Name</label>
             <input
@@ -244,10 +280,67 @@ const Enroll = () => {
               className="inputEnroll"
               value={formData.middleName}
               onChange={handleChange}
+              readOnly
               required
             />
             {errors.middleName && (
-              <span className="error">{errors.middleName[0]}</span>
+              <span className="error">{errors.middleName}</span>
+            )}
+            <label htmlFor="program">Program</label>
+            <select
+              id="program"
+              name="program"
+              className="inputEnroll"
+              value={formData.program}
+              onChange={handleChange}
+              data-readonly={isReadOnly ? "true" : "false"}
+              required
+            >
+              <option value="">Select Program</option>
+              <option value="Bachelor of Science in Computer Science">
+                Bachelor of Science in Computer Science
+              </option>
+              <option value="Bachelor of Science in Information Technology">
+                Bachelor of Science in Information Technology
+              </option>
+            </select>
+            {errors.program && <span className="error">{errors.program}</span>}
+            <label htmlFor="yearLevel">Year Level</label>
+            <select
+              id="yearLevel"
+              name="yearLevel"
+              className="inputEnroll"
+              value={formData.yearLevel}
+              onChange={handleChange}
+              data-readonly={isReadOnly ? "true" : "false"}
+              required
+            >
+              <option value="">Select Year Level</option>
+              <option value="First Year">First Year</option>
+              <option value="Second Year">Second Year</option>
+              <option value="Third Year">Third Year</option>
+              <option value="Fourth Year">Fourth Year</option>
+            </select>
+            {errors.yearLevel && (
+              <span className="error">{errors.yearLevel}</span>
+            )}
+            <label htmlFor="semester">Semester</label>
+            <select
+              id="semester"
+              name="semester"
+              className="inputEnroll"
+              value={formData.semester}
+              onChange={handleChange}
+              data-readonly={isReadOnly ? "true" : "false"}
+              required
+            >
+              <option value="">Select Semester</option>
+              <option value="First Semester">First Semester</option>
+              <option value="Second Semester">Second Semester</option>
+              <option value="Summer">Summer</option>
+            </select>
+            {errors.semester && (
+              <span className="error">{errors.semester}</span>
             )}
             <label htmlFor="sex">Sex</label>
             <select
@@ -262,7 +355,7 @@ const Enroll = () => {
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
-            {errors.sex && <span className="error">{errors.sex[0]}</span>}
+            {errors.sex && <span className="error">{errors.sex}</span>}
             <label htmlFor="contactNumber">Contact Number</label>
             <input
               type="text"
@@ -274,7 +367,7 @@ const Enroll = () => {
               required
             />
             {errors.contactNumber && (
-              <span className="error">{errors.contactNumber[0]}</span>
+              <span className="error">{errors.contactNumber}</span>
             )}
             <label htmlFor="facebookLink">Facebook Link</label>
             <input
@@ -286,9 +379,8 @@ const Enroll = () => {
               onChange={handleChange}
             />
             {errors.facebookLink && (
-              <span className="error">{errors.facebookLink[0]}</span>
-            )}{" "}
-            {/* Display error here */}
+              <span className="error">{errors.facebookLink}</span>
+            )}
             <label htmlFor="birthdate">Birthdate</label>
             <input
               type="date"
@@ -297,12 +389,13 @@ const Enroll = () => {
               className="inputEnroll"
               value={formData.birthdate}
               onChange={handleChange}
+              readOnly
               required
             />
             {errors.birthdate && (
-              <span className="error">{errors.birthdate[0]}</span>
+              <span className="error">{errors.birthdate}</span>
             )}
-            {formData.status === "transferee" && (
+            {formData.studentstatus === "transferee" && (
               <div className="transferee-requirements">
                 <p>
                   <strong>Requirements:</strong>
@@ -326,8 +419,7 @@ const Enroll = () => {
                 </p>
               </div>
             )}
-
-            {formData.status === "freshmen" && (
+            {formData.studentstatus === "freshmen" && (
               <div className="freshmen-requirements">
                 <p>
                   <strong>Requirements:</strong>
@@ -341,14 +433,14 @@ const Enroll = () => {
                   - Certificate of Good Moral
                   <br />
                   - Notice of Admission
-                  <br />
-                  - Brown Envelope (A4)
+                  <br />- Brown Envelope (A4)
                 </p>
               </div>
             )}
             <br />
             {/* Download Link */}
-            {(formData.status === "transferee" || formData.status === "freshmen") && (
+            {(formData.studentstatus === "transferee" ||
+              formData.studentstatus === "freshmen") && (
               <div className="admission-download">
                 <a
                   href="/path/to/admission-form.pdf"
@@ -390,7 +482,7 @@ const Enroll = () => {
               required
             />
             {errors.guardianName && (
-              <span className="error">{errors.guardianName[0]}</span>
+              <span className="error">{errors.guardianName}</span>
             )}
             <label htmlFor="guardianPhone">Guardian's Phone Number</label>
             <input
@@ -403,7 +495,7 @@ const Enroll = () => {
               required
             />
             {errors.guardianPhone && (
-              <span className="error">{errors.guardianPhone[0]}</span>
+              <span className="error">{errors.guardianPhone}</span>
             )}
 
             <label htmlFor="religion">Religion</label>
@@ -417,7 +509,7 @@ const Enroll = () => {
               required
             />
             {errors.religion && (
-              <span className="error">{errors.religion[0]}</span>
+              <span className="error">{errors.religion}</span>
             )}
             <label htmlFor="previousSection">Previous Section</label>
             <select
@@ -452,7 +544,7 @@ const Enroll = () => {
               <option value="3-7">3-7</option>
             </select>
             {errors.previousSection && (
-              <span className="error">{errors.previousSection[0]}</span>
+              <span className="error">{errors.previousSection}</span>
             )}
 
             <div className="buttons-next">
@@ -490,7 +582,7 @@ const Enroll = () => {
               required
             />
             {errors.houseNumber && (
-              <span className="error">{errors.houseNumber[0]}</span>
+              <span className="error">{errors.houseNumber}</span>
             )}
             <label htmlFor="street">Street</label>
             <input
@@ -502,7 +594,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.street && <span className="error">{errors.street[0]}</span>}
+            {errors.street && <span className="error">{errors.street}</span>}
             <label htmlFor="subdivision">Subdivision</label>
             <input
               type="text"
@@ -513,7 +605,7 @@ const Enroll = () => {
               onChange={handleChange}
             />
             {errors.subdivision && (
-              <span className="error">{errors.subdivision[0]}</span>
+              <span className="error">{errors.subdivision}</span>
             )}
             <label htmlFor="barangay">Barangay</label>
             <input
@@ -526,7 +618,7 @@ const Enroll = () => {
               required
             />
             {errors.barangay && (
-              <span className="error">{errors.barangay[0]}</span>
+              <span className="error">{errors.barangay}</span>
             )}
             <label htmlFor="municipality">Municipality</label>
             <input
@@ -539,7 +631,7 @@ const Enroll = () => {
               required
             />
             {errors.municipality && (
-              <span className="error">{errors.municipality[0]}</span>
+              <span className="error">{errors.municipality}</span>
             )}
             <label htmlFor="zipCode">Zip Code</label>
             <input
@@ -551,9 +643,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.zipCode && (
-              <span className="error">{errors.zipCode[0]}</span>
-            )}
+            {errors.zipCode && <span className="error">{errors.zipCode}</span>}
 
             <div className="buttons-next">
               <button
@@ -590,7 +680,7 @@ const Enroll = () => {
               required
             />
             {errors.mobileNumber && (
-              <span className="error">{errors.mobileNumber[0]}</span>
+              <span className="error">{errors.mobileNumber}</span>
             )}
             <label htmlFor="senderName">Sender Name</label>
             <input
@@ -603,7 +693,7 @@ const Enroll = () => {
               required
             />
             {errors.senderName && (
-              <span className="error">{errors.senderName[0]}</span>
+              <span className="error">{errors.senderName}</span>
             )}
             <label htmlFor="referenceNumber">Reference Number</label>
             <input
@@ -616,7 +706,7 @@ const Enroll = () => {
               required
             />
             {errors.referenceNumber && (
-              <span className="error">{errors.referenceNumber[0]}</span>
+              <span className="error">{errors.referenceNumber}</span>
             )}
             <label htmlFor="amount">Amount</label>
             <input
@@ -628,7 +718,7 @@ const Enroll = () => {
               onChange={handleChange}
               required
             />
-            {errors.amount && <span className="error">{errors.amount[0]}</span>}
+            {errors.amount && <span className="error">{errors.amount}</span>}
 
             <div className="buttons-next">
               <button

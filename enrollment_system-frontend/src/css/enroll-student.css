@@ -1,11 +1,15 @@
 .enroll-step {
-  background-color: #fff; 
+  background-color: #fff;
+}
+select[data-readonly="true"] {
+  pointer-events: none;
+  background-color: #e9ecef;
 }
 
 .enroll-form {
   display: flex;
   flex-direction: column;
-  height: 500px; 
+  height: 500px;
   width: 380px;
   margin-top: 20px;
   margin-left: 20px;
@@ -107,7 +111,6 @@
 }
 /* Mobile view */
 @media (max-width: 600px) {
-  
   .step-indicator {
     flex-direction: flex;
     gap: 10px;
@@ -115,7 +118,6 @@
   .enroll-form {
     height: 80vh;
   }
-
 
   .step-indicator span {
     width: 80px;

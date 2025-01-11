@@ -23,18 +23,27 @@ const Home = () => {
       return;
     }
     try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No token found");
+      }
+
       await axios.post(
         "http://localhost:8000/api/logout",
         {},
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      // alert("Logged out successfully!");
       navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
+      alert("Error logging out. Please try again.");
     }
   };
 
