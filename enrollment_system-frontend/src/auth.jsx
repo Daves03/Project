@@ -34,14 +34,15 @@ const Auth = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/api/login", {
-        email,
-        password,
-      });
-      // console.log(response.data);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/login`,
+        {
+          email,
+          password,
+        }
+      );
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
-      // alert("Logged in successfully!");
       if (response.data.role === "student") {
         navigate("/home");
       } else if (response.data.role === "admin") {
@@ -61,12 +62,12 @@ const Auth = () => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/api/send-message", {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/send-message`, {
         email,
         message,
       });
       alert("Message sent successfully!");
-      setIsLogin(true); // Redirect to login after sending the message
+      setIsLogin(true);
     } catch (error) {
       console.error("Message sending failed:", error);
       alert("Error sending message!");
