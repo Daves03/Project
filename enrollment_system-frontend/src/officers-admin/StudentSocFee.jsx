@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./officers-css/student-socfee.css";
-
 const EnrollStudent = () => {
   const [showModal, setShowModal] = useState(false);
   const [students, setStudents] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSection, setSelectedSection] = useState("");
+  const [selectedYearLevel, setSelectedYearLevel] = useState("");
   const [editableData, setEditableData] = useState({
     id: null,
     studentName: "",
@@ -19,35 +21,41 @@ const EnrollStudent = () => {
       fourthYear: "not paid",
     },
   });
-
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         const response = await axios.get(
           "http://127.0.0.1:8000/api/student-soc-fees"
         );
+
         setStudents(response.data);
       } catch (error) {
         console.error("Error fetching students:", error);
       }
     };
-
     fetchStudents();
   }, []);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditableData({ ...editableData, [name]: value });
   };
-
   const handleSocFeeChange = (e, year) => {
     setEditableData({
       ...editableData,
-      socFees: {
-        ...editableData.socFees,
-        [year]: e.target.value,
-      },
+      socFees: { ...editableData.socFees, [year]: e.target.value },
     });
+  };
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSectionChange = (e) => {
+    setSelectedSection(e.target.value);
+    // console.log("Selected Section:", e.target.value);
+  };
+  const handleYearLevelChange = (e) => {
+    setSelectedYearLevel(e.target.value);
+    // console.log("Selected Year Level:", e.target.value);
   };
 
   const handleSave = async () => {
@@ -63,9 +71,7 @@ const EnrollStudent = () => {
         soc_fee_third_year: editableData.socFees.thirdYear,
         soc_fee_fourth_year: editableData.socFees.fourthYear,
       };
-
       console.log("Saving data:", studentData);
-
       if (editableData.id) {
         await axios.put(
           `http://127.0.0.1:8000/api/student-soc-fees/${editableData.id}`,
@@ -77,9 +83,7 @@ const EnrollStudent = () => {
           studentData
         );
       }
-
       console.log("Data saved successfully");
-
       setShowModal(false);
       setEditableData({
         id: null,
@@ -95,7 +99,6 @@ const EnrollStudent = () => {
           fourthYear: "",
         },
       });
-
       const response = await axios.get(
         "http://127.0.0.1:8000/api/student-soc-fees"
       );
@@ -111,6 +114,27 @@ const EnrollStudent = () => {
       }
     }
   };
+  const searchedStudents = students.filter(
+    (student) =>
+      student.student_number.includes(searchTerm) ||
+      student.student_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredStudents = students.filter((student) => {
+    const matchesSection = selectedSection
+      ? student.section === selectedSection
+      : true;
+    const matchesYearLevel = selectedYearLevel
+      ? student.year_level === selectedYearLevel
+      : true;
+    console.log(
+      `Student: ${student.student_name}, Section: ${student.section}, Year Level: ${student.year_level}`
+    );
+    console.log(
+      `Matches Section: ${matchesSection}, Matches Year Level: ${matchesYearLevel}`
+    );
+    return matchesSection && matchesYearLevel;
+  });
 
   return (
     <div className="socite-fee-container">
@@ -121,19 +145,30 @@ const EnrollStudent = () => {
           type="text"
           placeholder="Search by name or student number"
           className="search-bar-officers"
+          value={searchTerm}
+          onChange={handleSearchChange}
         />
 
-        <select className="filter-officers">
+        <select
+          className="filter-officers"
+          value={selectedSection}
+          onChange={handleSectionChange}
+        >
           <option value="">Filter by Section</option>
-          <option value="A">BSCS 3-1</option>
+          <option value="3-1">3-1</option>
+          {/* Add other sections here */}
         </select>
 
-        <select className="filter-officers">
+        <select
+          className="filter-officers"
+          value={selectedYearLevel}
+          onChange={handleYearLevelChange}
+        >
           <option value="">Filter by Year Level</option>
-          <option value="1">1st Year</option>
-          <option value="2">2nd Year</option>
-          <option value="3">3rd Year</option>
-          <option value="4">4th Year</option>
+          <option value="1st Year">1st Year</option>
+          <option value="2nd Year">2nd Year</option>
+          <option value="3rd Year">3rd Year</option>
+          <option value="4th Year">4th Year</option>
         </select>
 
         <button className="add-btn-officers" onClick={() => setShowModal(true)}>
@@ -159,43 +194,82 @@ const EnrollStudent = () => {
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
-              <tr key={student.id}>
-                <td>{student.student_name}</td>
-                <td>{student.student_number}</td>
-                <td>Regular</td>
-                <td>{student.year_level}</td>
-                <td>{student.section}</td>
-                <td>{student.course}</td>
-                <td>{student.soc_fee_first_year}</td>
-                <td>{student.soc_fee_second_year}</td>
-                <td>{student.soc_fee_third_year}</td>
-                <td>{student.soc_fee_fourth_year}</td>
-                <td>
-                  <button
-                    onClick={() => {
-                      setEditableData({
-                        id: student.id,
-                        studentName: student.student_name,
-                        studentNumber: student.student_number,
-                        yearLevel: student.year_level,
-                        section: student.section,
-                        course: student.course,
-                        socFees: {
-                          firstYear: student.soc_fee_first_year,
-                          secondYear: student.soc_fee_second_year,
-                          thirdYear: student.soc_fee_third_year,
-                          fourthYear: student.soc_fee_fourth_year,
-                        },
-                      });
-                      setShowModal(true);
-                    }}
-                  >
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {/* Display students based on search term */}
+            {searchTerm
+              ? searchedStudents.map((student) => (
+                  <tr key={student.id}>
+                    <td>{student.student_name}</td>
+                    <td>{student.student_number}</td>
+                    <td>Regular</td>
+                    <td>{student.year_level}</td>
+                    <td>{student.section}</td>
+                    <td>{student.course}</td>
+                    <td>{student.soc_fee_first_year}</td>
+                    <td>{student.soc_fee_second_year}</td>
+                    <td>{student.soc_fee_third_year}</td>
+                    <td>{student.soc_fee_fourth_year}</td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          setEditableData({
+                            id: student.id,
+                            studentName: student.student_name,
+                            studentNumber: student.student_number,
+                            yearLevel: student.year_level,
+                            section: student.section,
+                            course: student.course,
+                            socFees: {
+                              firstYear: student.soc_fee_first_year,
+                              secondYear: student.soc_fee_second_year,
+                              thirdYear: student.soc_fee_third_year,
+                              fourthYear: student.soc_fee_fourth_year,
+                            },
+                          });
+                          setShowModal(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              : filteredStudents.map((student) => (
+                  <tr key={student.id}>
+                    <td>{student.student_name}</td>
+                    <td>{student.student_number}</td>
+                    <td>Regular</td>
+                    <td>{student.year_level}</td>
+                    <td>{student.section}</td>
+                    <td>{student.course}</td>
+                    <td>{student.soc_fee_first_year}</td>
+                    <td>{student.soc_fee_second_year}</td>
+                    <td>{student.soc_fee_third_year}</td>
+                    <td>{student.soc_fee_fourth_year}</td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          setEditableData({
+                            id: student.id,
+                            studentName: student.student_name,
+                            studentNumber: student.student_number,
+                            yearLevel: student.year_level,
+                            section: student.section,
+                            course: student.course,
+                            socFees: {
+                              firstYear: student.soc_fee_first_year,
+                              secondYear: student.soc_fee_second_year,
+                              thirdYear: student.soc_fee_third_year,
+                              fourthYear: student.soc_fee_fourth_year,
+                            },
+                          });
+                          setShowModal(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>

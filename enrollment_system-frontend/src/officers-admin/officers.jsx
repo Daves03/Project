@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 import Enrollment from "./EnrollmentFormContent";
 import SocFee from "./StudentSocFee";
 import "./officers-css/officers.css";
@@ -11,6 +13,13 @@ import axios from "axios";
 const OfficersPage = () => {
   const [activePage, setActivePage] = useState("enrollment");
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const handleClose = () => setShowModal(false);
+  const handleShow = (message) => {
+    setModalMessage(message);
+    setShowModal(true);
+  };
 
   const renderContent = () => {
     switch (activePage) {
@@ -23,33 +32,26 @@ const OfficersPage = () => {
     }
   };
 
-  const handleLogout = async () => {
-    const isConfirmed = window.confirm("Are you sure you want to log out?");
-    if (!isConfirmed) {
-      return;
-    }
+  const handleLogout = () => {
+    handleShow("Are you sure you want to log out?");
+  };
+  const confirmLogout = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("No token found");
       }
-
       await axios.post(
         "http://localhost:8000/api/logout",
         {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       localStorage.removeItem("token");
       localStorage.removeItem("role");
-      // alert("Logged out successfully!");
       navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
-      alert("Error logging out. Please try again.");
+      handleShow("Error logging out. Please try again.");
     }
   };
 
@@ -95,6 +97,26 @@ const OfficersPage = () => {
     <div className="officers-container">
       <Sidebar />
       <div className="officers-content">{renderContent()}</div>
+      {/* Modal */}{" "}
+      <Modal show={showModal} onHide={handleClose} centered>
+        {" "}
+        <Modal.Header closeButton>
+          {" "}
+          <Modal.Title>Logout Confirmation</Modal.Title>{" "}
+        </Modal.Header>{" "}
+        <Modal.Body>{modalMessage}</Modal.Body>{" "}
+        <Modal.Footer>
+          {" "}
+          <Button variant="secondary" onClick={handleClose}>
+            {" "}
+            Cancel{" "}
+          </Button>{" "}
+          <Button variant="primary" onClick={confirmLogout}>
+            {" "}
+            Logout{" "}
+          </Button>{" "}
+        </Modal.Footer>{" "}
+      </Modal>
     </div>
   );
 };

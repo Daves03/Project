@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from "react";
 import "../css/enroll-student.css";
 import axios from "axios";
+import { Modal, Button } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Enroll = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isReadOnly, setIsReadOnly] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  const handleClose = () => setShowModal(false);
+  const handleShow = (message) => {
+    setModalMessage(message);
+    setShowModal(true);
+  };
+
   const [formData, setFormData] = useState({
     studentstatus: "",
+    section: "",
     email: "",
     studentNumber: "",
     lastName: "",
@@ -61,6 +73,7 @@ const Enroll = () => {
           firstName: studentDetails?.first_name || "",
           lastName: studentDetails?.last_name || "",
           middleName: studentDetails?.middle_name || "",
+          section: studentDetails?.section || "",
           program: studentDetails?.course || "",
           yearLevel: studentDetails?.year_level || "",
           semester: studentDetails?.semester || "",
@@ -168,14 +181,16 @@ const Enroll = () => {
         }
       );
       console.log("Response:", response.data);
-      alert("Enrollment successful!");
+      handleShow("Enrollment successful!");
     } catch (error) {
       if (error.response && error.response.status === 422) {
         setErrors(error.response.data.errors);
-        alert("Please correct the errors highlighted above.");
+        handleShow("Please correct the errors highlighted above.");
+      } else if (error.response && error.response.status === 429) {
+        handleShow(error.response.data.error); // Cooldown message
       } else {
         console.error("Error during enrollment:", error);
-        alert("Enrollment failed. Please check your information.");
+        handleShow("Enrollment failed. Please check your information.");
       }
     }
   };
@@ -196,7 +211,9 @@ const Enroll = () => {
       {currentStep === 1 && (
         <div className="enroll-step">
           <form className="enroll-form">
-            <label htmlFor="studentstatus">Status</label>
+            <label htmlFor="studentstatus">
+              Status<span className="required">*</span>
+            </label>
             <select
               id="studentstatus"
               name="studentstatus"
@@ -208,12 +225,14 @@ const Enroll = () => {
             >
               <option value="">Select</option>
               <option value="Regular">Regular</option>
-              <option value="Iregular">Iregular</option>
+              <option value="Irregular">Irregular</option>
               <option value="transferee">Transferee</option>
               <option value="freshmen">Freshmen</option>
             </select>
             {errors.status && <span className="error">{errors.status}</span>}
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">
+              Email<span className="required">*</span>
+            </label>
             <input
               type="email"
               id="email"
@@ -228,7 +247,9 @@ const Enroll = () => {
             {formData.studentstatus !== "transferee" &&
               formData.studentstatus !== "freshmen" && (
                 <>
-                  <label htmlFor="studentNumber">Student Number</label>
+                  <label htmlFor="studentNumber">
+                    Student Number<span className="required">*</span>
+                  </label>
                   <input
                     type="text"
                     id="studentNumber"
@@ -244,7 +265,9 @@ const Enroll = () => {
                   )}
                 </>
               )}
-            <label htmlFor="lastName">Last Name</label>
+            <label htmlFor="lastName">
+              Last Name<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="lastName"
@@ -258,7 +281,9 @@ const Enroll = () => {
             {errors.lastName && (
               <span className="error">{errors.lastName}</span>
             )}
-            <label htmlFor="firstName">First Name</label>
+            <label htmlFor="firstName">
+              First Name<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="firstName"
@@ -272,7 +297,9 @@ const Enroll = () => {
             {errors.firstName && (
               <span className="error">{errors.firstName}</span>
             )}
-            <label htmlFor="middleName">Middle Name</label>
+            <label htmlFor="middleName">
+              Middle Name<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="middleName"
@@ -286,7 +313,9 @@ const Enroll = () => {
             {errors.middleName && (
               <span className="error">{errors.middleName}</span>
             )}
-            <label htmlFor="program">Program</label>
+            <label htmlFor="program">
+              Program<span className="required">*</span>
+            </label>
             <select
               id="program"
               name="program"
@@ -324,7 +353,9 @@ const Enroll = () => {
             {errors.yearLevel && (
               <span className="error">{errors.yearLevel}</span>
             )}
-            <label htmlFor="semester">Semester</label>
+            <label htmlFor="semester">
+              Semester<span className="required">*</span>
+            </label>
             <select
               id="semester"
               name="semester"
@@ -342,7 +373,9 @@ const Enroll = () => {
             {errors.semester && (
               <span className="error">{errors.semester}</span>
             )}
-            <label htmlFor="sex">Sex</label>
+            <label htmlFor="sex">
+              Sex<span className="required">*</span>
+            </label>
             <select
               id="sex"
               name="sex"
@@ -356,7 +389,9 @@ const Enroll = () => {
               <option value="Female">Female</option>
             </select>
             {errors.sex && <span className="error">{errors.sex}</span>}
-            <label htmlFor="contactNumber">Contact Number</label>
+            <label htmlFor="contactNumber">
+              Contact Number<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="contactNumber"
@@ -369,7 +404,9 @@ const Enroll = () => {
             {errors.contactNumber && (
               <span className="error">{errors.contactNumber}</span>
             )}
-            <label htmlFor="facebookLink">Facebook Link</label>
+            <label htmlFor="facebookLink">
+              Facebook Link <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="facebookLink"
@@ -381,7 +418,9 @@ const Enroll = () => {
             {errors.facebookLink && (
               <span className="error">{errors.facebookLink}</span>
             )}
-            <label htmlFor="birthdate">Birthdate</label>
+            <label htmlFor="birthdate">
+              Birthdate<span className="required">*</span>
+            </label>
             <input
               type="date"
               id="birthdate"
@@ -471,7 +510,9 @@ const Enroll = () => {
       {currentStep === 2 && (
         <div className="enroll-step">
           <form className="enroll-form">
-            <label htmlFor="guardianName">Guardian's Name</label>
+            <label htmlFor="guardianName">
+              Guardian's Name<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="guardianName"
@@ -484,7 +525,9 @@ const Enroll = () => {
             {errors.guardianName && (
               <span className="error">{errors.guardianName}</span>
             )}
-            <label htmlFor="guardianPhone">Guardian's Phone Number</label>
+            <label htmlFor="guardianPhone">
+              Guardian's Phone Number<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="guardianPhone"
@@ -498,7 +541,9 @@ const Enroll = () => {
               <span className="error">{errors.guardianPhone}</span>
             )}
 
-            <label htmlFor="religion">Religion</label>
+            <label htmlFor="religion">
+              Religion<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="religion"
@@ -511,13 +556,16 @@ const Enroll = () => {
             {errors.religion && (
               <span className="error">{errors.religion}</span>
             )}
-            <label htmlFor="previousSection">Previous Section</label>
+            <label htmlFor="previousSection">
+              Previous Section<span className="required">*</span>
+            </label>
             <select
               id="previousSection"
               name="previousSection"
               className="inputEnroll"
-              value={formData.previousSection}
+              value={formData.section}
               onChange={handleChange}
+              data-readonly={isReadOnly ? "true" : "false"}
               required
             >
               <option value="">Select</option>
@@ -542,6 +590,7 @@ const Enroll = () => {
               <option value="3-5">3-5</option>
               <option value="3-6">3-6</option>
               <option value="3-7">3-7</option>
+              <option value="4-3">4-3</option>
             </select>
             {errors.previousSection && (
               <span className="error">{errors.previousSection}</span>
@@ -571,7 +620,9 @@ const Enroll = () => {
       {currentStep === 3 && (
         <div className="enroll-step">
           <form className="enroll-form">
-            <label htmlFor="houseNumber">House Number</label>
+            <label htmlFor="houseNumber">
+              House Number<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="houseNumber"
@@ -584,7 +635,9 @@ const Enroll = () => {
             {errors.houseNumber && (
               <span className="error">{errors.houseNumber}</span>
             )}
-            <label htmlFor="street">Street</label>
+            <label htmlFor="street">
+              Street<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="street"
@@ -595,7 +648,9 @@ const Enroll = () => {
               required
             />
             {errors.street && <span className="error">{errors.street}</span>}
-            <label htmlFor="subdivision">Subdivision</label>
+            <label htmlFor="subdivision">
+              Subdivision<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="subdivision"
@@ -607,7 +662,9 @@ const Enroll = () => {
             {errors.subdivision && (
               <span className="error">{errors.subdivision}</span>
             )}
-            <label htmlFor="barangay">Barangay</label>
+            <label htmlFor="barangay">
+              Barangay<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="barangay"
@@ -620,7 +677,9 @@ const Enroll = () => {
             {errors.barangay && (
               <span className="error">{errors.barangay}</span>
             )}
-            <label htmlFor="municipality">Municipality</label>
+            <label htmlFor="municipality">
+              Municipality<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="municipality"
@@ -633,7 +692,9 @@ const Enroll = () => {
             {errors.municipality && (
               <span className="error">{errors.municipality}</span>
             )}
-            <label htmlFor="zipCode">Zip Code</label>
+            <label htmlFor="zipCode">
+              Zip Code<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="zipCode"
@@ -669,7 +730,9 @@ const Enroll = () => {
       {currentStep === 4 && (
         <div className="enroll-step">
           <form className="enroll-form">
-            <label htmlFor="mobileNumber">Mobile Number</label>
+            <label htmlFor="mobileNumber">
+              Mobile Number<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="mobileNumber"
@@ -682,7 +745,9 @@ const Enroll = () => {
             {errors.mobileNumber && (
               <span className="error">{errors.mobileNumber}</span>
             )}
-            <label htmlFor="senderName">Sender Name</label>
+            <label htmlFor="senderName">
+              Sender Name<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="senderName"
@@ -695,7 +760,9 @@ const Enroll = () => {
             {errors.senderName && (
               <span className="error">{errors.senderName}</span>
             )}
-            <label htmlFor="referenceNumber">Reference Number</label>
+            <label htmlFor="referenceNumber">
+              Reference Number<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="referenceNumber"
@@ -708,7 +775,9 @@ const Enroll = () => {
             {errors.referenceNumber && (
               <span className="error">{errors.referenceNumber}</span>
             )}
-            <label htmlFor="amount">Amount</label>
+            <label htmlFor="amount">
+              Amount<span className="required">*</span>
+            </label>
             <input
               type="text"
               id="amount"
@@ -739,6 +808,18 @@ const Enroll = () => {
           </form>
         </div>
       )}
+
+      <Modal show={showModal} onHide={handleClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Notification</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{modalMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

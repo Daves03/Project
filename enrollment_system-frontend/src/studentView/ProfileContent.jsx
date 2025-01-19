@@ -8,7 +8,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchStudentDetails = async () => {
       try {
-        const token = localStorage.getItem("token"); // Adjust this based on your auth setup
+        const token = localStorage.getItem("token");
         const response = await axios.get(
           "http://127.0.0.1:8000/api/student-details",
           {
@@ -61,7 +61,7 @@ const Profile = () => {
               readOnly
             />
           </div>
-          <div className="column">
+          {/* <div className="column">
             <label htmlFor="age">Age</label>
             <input
               type="number"
@@ -70,7 +70,7 @@ const Profile = () => {
               value={studentDetails.student_details?.age || ""}
               readOnly
             />
-          </div>
+          </div> */}
         </div>
         <div className="row">
           <div className="column">

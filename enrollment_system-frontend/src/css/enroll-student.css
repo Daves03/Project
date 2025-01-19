@@ -5,6 +5,16 @@ select[data-readonly="true"] {
   pointer-events: none;
   background-color: #e9ecef;
 }
+.required {
+  color: #e82c2c;
+}
+
+/* Add this to your CSS file */
+.modal-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .enroll-form {
   display: flex;

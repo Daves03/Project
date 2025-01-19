@@ -6,19 +6,39 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\StudentDetails;
 use App\Models\Notification;
+use App\Models\StudentSubjects;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
-    public function enroll(Request $request)
-{
-    Log::info('Enrollment request received', $request->all());
-    Log::info('Request headers:', $request->headers->all());
-    try { $user = $request->user(); if (!$user) { throw new \Exception('User not authenticated'); } Log::info('Authenticated user:', ['user_id' => $user->id, 'email' => $user->email]); } catch (\Exception $e) { Log::error('Authentication Error: ' . $e->getMessage()); return response()->json(['error' => 'Authentication error occurred.'], 401); // 401 Unauthorized 
-        }
+    // In app/Http/Controllers/StudentController.php
 
+    public function enroll(Request $request)
+    {
+        Log::info('Enrollment request received', $request->all());
+        Log::info('Request headers:', $request->headers->all());
+    
+        try {
+            $user = $request->user();
+            if (!$user) {
+                throw new \Exception('User not authenticated');
+            }
+            Log::info('Authenticated user:', ['user_id' => $user->id, 'email' => $user->email]);
+        } catch (\Exception $e) {
+            Log::error('Authentication Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Authentication error occurred.'], 401);
+        }
+    
+        $student = Student::where('user_id', $user->id)->first();
+        if ($student && $student->last_enrollment_at) {
+            $cooldown = now()->diffInMinutes($student->last_enrollment_at);
+            if ($cooldown < 60) { // 60 minutes cooldown
+                return response()->json(['error' => 'You must wait ' . (60 - $cooldown) . ' minutes before re-enrolling.'], 429);
+            }
+        }
+    
         $validatedData = $request->validate([
             'email' => 'required|email',
             'studentNumber' => 'required|string',
@@ -42,80 +62,94 @@ class StudentController extends Controller
             'referenceNumber' => 'required|string',
             'amount' => 'required|numeric',
             'yearLevel' => 'required|in:First Year,Second Year,Third Year,Fourth Year',
-            'semester' => 'required|string', 
-            'studentstatus' => 'required|in:Regular, Irregular, transferee, freshmen',
+            'semester' => 'required|string',
+            'studentstatus' => 'required|in:Regular,Irregular,transferee,freshmen',
             'program' => 'required|string|in:Bachelor of Science in Computer Science,Bachelor of Science in Information Technology',
-    ]);
-
-    $validatedData['student_number'] = $validatedData['studentNumber'];
-    unset($validatedData['studentNumber']);
-    $validatedData['last_name'] = $validatedData['lastName'];
-    unset($validatedData['lastName']);
-    $validatedData['first_name'] = $validatedData['firstName'];
-    unset($validatedData['firstName']);
-    $validatedData['middle_name'] = $validatedData['middleName'];
-    unset($validatedData['middleName']);
-    $validatedData['contact_number'] = $validatedData['contactNumber'];
-    unset($validatedData['contactNumber']);
-
-    $validatedData['year_level'] = $validatedData['yearLevel'];
-    unset($validatedData['yearLevel']);
-    $validatedData['semester'] = $validatedData['semester'];
-    $validatedData['student_status'] = $validatedData['studentstatus'];
-    $validatedData['program'] = $validatedData['program'];
+        ]);
     
-
-    // Corrected line
-    $validatedData['user_id'] = $user->id;
-
-    DB::beginTransaction();
-
-    try {
-        // Create the student record
-        $student = Student::create($validatedData);
-
-        // Create the guardian record associated with the student
-        $student->guardian()->create([
-            'name' => $validatedData['guardianName'],
-            'phone' => $validatedData['guardianPhone'],
-            'religion' => $validatedData['religion'],
-        ]);
-
-        // Create the address record associated with the student
-        $student->address()->create([
-            'house_number' => $validatedData['houseNumber'],
-            'street' => $validatedData['street'],
-            'subdivision' => $validatedData['subdivision'],
-            'barangay' => $validatedData['barangay'],
-            'municipality' => $validatedData['municipality'],
-            'zip_code' => $validatedData['zipCode'],
-        ]);
-
-        // Create the payment record associated with the student and set payment_status to 'pending'
-        $student->payment()->create([
-            'mobile_number' => $validatedData['mobileNumber'],
-            'amount' => $validatedData['amount'],
-            'sender_name' => $validatedData['senderName'],
-            'reference_number' => $validatedData['referenceNumber'],
-            'payment_status' => 'pending'
-        ]);
-
-        // Commit the transaction
-        DB::commit();
-
-        Log::info('Enrollment successful', ['student_id' => $student->id]);
-
-        return response()->json(['message' => 'Enrollment successful!'], 201);
-    } catch (\Illuminate\Database\QueryException $e) {
-        DB::rollBack(); 
-        Log::error('Database Error: ' . $e->getMessage(), ['request' => $request->all()]);
-        return response()->json(['error' => 'Database error occurred.'], 500);
-    } catch (\Exception $e) {
-        DB::rollBack(); 
-        Log::error('General Error: ' . $e->getMessage(), ['request' => $request->all()]);
-        return response()->json(['error' => 'An error occurred.'], 500);
+        $validatedData['student_number'] = $validatedData['studentNumber'];
+        unset($validatedData['studentNumber']);
+        $validatedData['last_name'] = $validatedData['lastName'];
+        unset($validatedData['lastName']);
+        $validatedData['first_name'] = $validatedData['firstName'];
+        unset($validatedData['firstName']);
+        $validatedData['middle_name'] = $validatedData['middleName'];
+        unset($validatedData['middleName']);
+        $validatedData['contact_number'] = $validatedData['contactNumber'];
+        unset($validatedData['contactNumber']);
+    
+        $validatedData['year_level'] = $validatedData['yearLevel'];
+        unset($validatedData['yearLevel']);
+        $validatedData['semester'] = $validatedData['semester'];
+        $validatedData['student_status'] = $validatedData['studentstatus'];
+        $validatedData['program'] = $validatedData['program'];
+    
+        $validatedData['user_id'] = $user->id;
+    
+        DB::beginTransaction();
+    
+        try {
+            // Create the student record
+            $student = Student::updateOrCreate(
+                ['user_id' => $user->id],
+                $validatedData
+            );
+    
+            // Update the last enrollment timestamp
+            $student->update(['last_enrollment_at' => now()]);
+    
+            // Create the guardian record associated with the student
+            $student->guardian()->updateOrCreate(
+                ['student_id' => $student->id],
+                [
+                    'name' => $validatedData['guardianName'],
+                    'phone' => $validatedData['guardianPhone'],
+                    'religion' => $validatedData['religion'],
+                ]
+            );
+    
+            // Create the address record associated with the student
+            $student->address()->updateOrCreate(
+                ['student_id' => $student->id],
+                [
+                    'house_number' => $validatedData['houseNumber'],
+                    'street' => $validatedData['street'],
+                    'subdivision' => $validatedData['subdivision'],
+                    'barangay' => $validatedData['barangay'],
+                    'municipality' => $validatedData['municipality'],
+                    'zip_code' => $validatedData['zipCode'],
+                ]
+            );
+    
+            // Create the payment record associated with the student and set payment_status to 'pending'
+            $student->payment()->updateOrCreate(
+                ['student_id' => $student->id],
+                [
+                    'mobile_number' => $validatedData['mobileNumber'],
+                    'amount' => $validatedData['amount'],
+                    'sender_name' => $validatedData['senderName'],
+                    'reference_number' => $validatedData['referenceNumber'],
+                    'payment_status' => 'pending'
+                ]
+            );
+    
+            // Commit the transaction
+            DB::commit();
+    
+            Log::info('Enrollment successful', ['student_id' => $student->id]);
+    
+            return response()->json(['message' => 'Enrollment successful!'], 201);
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            Log::error('Database Error: ' . $e->getMessage(), ['request' => $request->all()]);
+            return response()->json(['error' => 'Database error occurred.'], 500);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('General Error: ' . $e->getMessage(), ['request' => $request->all()]);
+            return response()->json(['error' => 'An error occurred.'], 500);
+        }
     }
-}
+    
 
 
     public function getAllStudents()
@@ -182,12 +216,25 @@ class StudentController extends Controller
 
     public function getFacultyEnrollments()
     {
-        $enrollments = Student::where('status', 'officer_approved')
+        $enrollments = Student::with('details') // Include the relationship to fetch details
+            ->where('status', 'officer_approved')
             ->where('faculty_status', '!=', 'faculty_approved')
-            ->get(['id', 'first_name', 'last_name', 'student_number', 'status', 'faculty_status', 'program', 'year_level', 'semester']);
+            ->where('faculty_status', '!=', 'on_process_COR')
+            ->get(['id', 'first_name', 'last_name', 'student_number', 'status', 'faculty_status', 'program', 'year_level', 'semester', 'user_id']);
         
         return response()->json($enrollments);
     }
+
+    public function getStudentsOnProcessCOR() {
+        $students = Student::with('details')
+            ->where('faculty_status', 'on_process_COR')
+            ->orWhere('faculty_status', 'faculty_approved')
+            ->get(['id', 'first_name', 'last_name', 'student_number', 'status', 'faculty_status', 'program', 'year_level', 'semester', 'user_id']);
+        
+        return response()->json($students);
+    }
+        
+
     
 
     public function getStudents()
@@ -216,13 +263,14 @@ class StudentController extends Controller
 
     
     public function approveByFaculty($id)
-{
-    $enrollment = Student::findOrFail($id);
-    $enrollment->faculty_status = 'faculty_approved';
-    $enrollment->save();
-
-    return response()->json(['message' => 'Enrollment approved by faculty and forwarded to admin.']);
-}
+    {
+        $enrollment = Student::findOrFail($id);
+        $enrollment->faculty_status = 'on_process_COR'; // Update status to "on process COR"
+        $enrollment->save();
+    
+        return response()->json(['message' => 'Faculty status updated to "on process COR". Proceed to enrollment.']);
+    }
+    
 
 
 public function declineByFaculty($id)
@@ -239,45 +287,41 @@ public function declineByFaculty($id)
 public function getAdminEnrollments()
 {
     $enrollments = Student::where('status', 'officer_approved')
-    ->where('admin_status', '!=', 'admin_approved')
+        ->where('admin_status', '!=', 'admin_approved')
         ->where('faculty_status', 'faculty_approved')
-        ->get(['id', 'first_name', 'last_name', 'student_number', 'status', 'faculty_status', 'program', 'year_level', 'semester']);
+        ->get(['id', 'first_name', 'last_name', 'student_number', 'status', 'faculty_status', 'program', 'year_level', 'semester', 'user_id']);
     
     return response()->json($enrollments);
 }
 
 
-public function updateStudentStatus(Request $request, $id)
+
+public function updateStudentStatus(Request $request, $studentId)
 {
-    $request->validate([
-        'student_status' => 'required|string|in:Regular,Irregular'
-    ]);
-
-    DB::beginTransaction();
-
     try {
-        // Find the student by ID
-        $student = Student::findOrFail($id);
-        $userId = $student->user_id; // Get the user ID
+        // Fetch the student to get the correct user_id
+        $student = Student::findOrFail($studentId);
+        $userId = $student->user_id;
 
-        // Update student status in students table
-        $student->student_status = $request->student_status;
-        $student->save();
+        // Ensure the student details record exists or create a new one
+        $studentDetails = StudentDetails::firstOrNew(['user_id' => $userId]);
 
-        // Update student status in student_details table
-        $studentDetails = StudentDetails::where('user_id', $userId)->first();
-        if ($studentDetails) {
-            $studentDetails->student_status = $request->student_status;
-            $studentDetails->save();
-        }
+        // Update the fields
+        $studentDetails->student_status = $request->input('student_status');
+        $studentDetails->year_level = $request->input('year_level');
+        $studentDetails->semester = $request->input('semester');
 
-        DB::commit();
+        $studentDetails->save();
+
         return response()->json(['message' => 'Student status updated successfully.']);
     } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json(['error' => 'Failed to update student status.'], 500);
+        Log::error('Error updating student status: ' . $e->getMessage());
+        Log::error('Trace: ' . $e->getTraceAsString());
+        return response()->json(['message' => 'Server error'], 500);
     }
 }
+
+
 
 
 public function approveByAdmin($id)
@@ -322,6 +366,86 @@ public function getApprovedEnrollments()
         return response()->json(['error' => 'Failed to fetch approved enrollments.'], 500);
     }
 }
+
+
+
+
+
+
+public function assignSubjects(Request $request, $studentId)
+{
+    try {
+        $student = Student::findOrFail($studentId);
+        $userId = $student->user_id;
+
+        $studentSubjects = StudentSubjects::firstOrNew(['user_id' => $userId]);
+
+        $subjects = $request->input('subjects', []);
+        foreach ($subjects as $index => $subject) {
+            $subjectColumn = 'subject_' . ($index + 1);
+            $studentSubjects->$subjectColumn = $subject;
+        }
+
+        $studentSubjects->save();
+
+        $student->faculty_status = 'faculty_approved';
+        $student->save();
+
+        return response()->json(['message' => 'Subjects assigned and faculty status updated successfully.']);
+    } catch (\Exception $e) {
+        Log::error('Error assigning subjects: ' . $e->getMessage());
+        Log::error('Trace: ' . $e->getTraceAsString());
+        return response()->json(['message' => 'Server error'], 500);
+    }
+}
+
+public function getCOR($userId)
+{
+    try {
+        // Fetch the student subjects for the given user_id
+        $studentSubjects = StudentSubjects::where('user_id', $userId)->firstOrFail();
+
+        // Prepare the response data by retrieving actual subject details
+        $subjects = [];
+        for ($i = 1; $i <= 10; $i++) {
+            $subjectCode = $studentSubjects->{'subject_' . $i};
+            if ($subjectCode) {
+                // Fetch subject details from the curriculum or other relevant table
+                $subjectDetails = \App\Models\Curriculum::where('course_code', $subjectCode)->first();
+                if ($subjectDetails) {
+                    $subjects[] = [
+                        'course_code' => $subjectDetails->course_code,
+                        'course_title' => $subjectDetails->course_title,
+                        'credit_unit_lec' => $subjectDetails->credit_unit_lec,
+                        'credit_unit_lab' => $subjectDetails->credit_unit_lab,
+                        'contact_hours_lec' => $subjectDetails->contact_hours_lec,
+                        'contact_hours_lab' => $subjectDetails->contact_hours_lab
+                    ];
+                }
+            }
+        }
+
+        $corData = ['subjects' => $subjects];
+
+        return response()->json($corData);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error fetching COR data'], 500);
+    }
+}
+
+public function updateSection(Request $request, $userId)
+{
+    $request->validate([
+        'section' => 'required|string|max:5',
+    ]);
+
+    $student = StudentDetails::where('user_id', $userId)->firstOrFail();
+    $student->section = $request->section;
+    $student->save();
+
+    return response()->json(['message' => 'Section updated successfully']);
+}
+
 
 
 

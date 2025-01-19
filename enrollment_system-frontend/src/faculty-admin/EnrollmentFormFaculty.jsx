@@ -7,6 +7,10 @@ const Enrollment = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [students, setStudents] = useState([]);
   const [enrollmentStatus, setEnrollmentStatus] = useState({});
+  const [checklist, setChecklist] = useState(null);
+  const [filteredChecklist, setFilteredChecklist] = useState(null);
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -14,6 +18,7 @@ const Enrollment = () => {
         const response = await axios.get(
           "http://127.0.0.1:8000/api/enrollments?status=officer_approved"
         );
+        console.log("Fetched students:", response.data); // Add this line for debugging
         setStudents(response.data);
       } catch (error) {
         console.error("Error fetching enrollments for faculty:", error);
@@ -23,14 +28,32 @@ const Enrollment = () => {
     fetchStudents();
   }, []);
 
-  const openModal = (student) => {
-    setSelectedStudent(student);
-    setShowModal(true);
+  const openModal = async (student) => {
+    console.log("Selected student:", student); // Log the selected student
+    if (student.user_id) {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/students/${student.user_id}/checklist`
+        );
+        setChecklist(response.data.checklist);
+        setFilteredChecklist(response.data.checklist); // Set initial filtered checklist
+      } catch (error) {
+        console.error("Error fetching student checklist:", error);
+      }
+      setSelectedStudent(student);
+      setShowModal(true);
+    } else {
+      console.error("User ID is missing for the selected student.");
+    }
   };
 
   const closeModal = () => {
     setShowModal(false);
     setSelectedStudent(null);
+    setChecklist(null);
+    setFilteredChecklist(null);
+    setSelectedSemester("");
+    setSelectedYear("");
   };
 
   const handleStatusChange = async (studentId, status) => {
@@ -102,6 +125,22 @@ const Enrollment = () => {
       alert("Failed to archive enrollment.");
     }
   };
+
+  const handleFilterChange = () => {
+    let filtered = checklist;
+    if (selectedSemester) {
+      filtered = filtered.filter((item) => item.semester === selectedSemester);
+    }
+    if (selectedYear) {
+      const selectedYearNumber = parseInt(selectedYear, 10); // Convert selectedYear to a number
+      filtered = filtered.filter((item) => item.year === selectedYearNumber); // Match against year
+    }
+    setFilteredChecklist(filtered);
+  };
+  useEffect(() => {
+    console.log("Checklist data:", checklist); // Log the checklist data
+    handleFilterChange();
+  }, [selectedSemester, selectedYear, checklist]);
 
   return (
     <div className="enrollment-container">
@@ -177,10 +216,115 @@ const Enrollment = () => {
                 <strong>Student Number: </strong>
                 {selectedStudent.student_number}
               </p>
+              <p>
+                <strong>Program: </strong>
+                {selectedStudent.program}
+              </p>
+              <p>
+                <strong>Semester: </strong>
+                {selectedStudent.semester}
+              </p>
+              <p>
+                <strong>Year: </strong>
+                {selectedStudent.year_level}
+              </p>
               <div className="modal-header">
                 <h2>Checklists</h2>
               </div>
-              {/* Add checklist details here */}
+              <div className="filter-section">
+                <select
+                  className="filter-select"
+                  value={selectedSemester}
+                  onChange={(e) => setSelectedSemester(e.target.value)}
+                >
+                  <option value="">Select Semester</option>
+                  <option value="1st Semester">1st Semester</option>
+                  <option value="2nd Semester">2nd Semester</option>
+                  <option value="Summer">Summer</option>
+                </select>
+                <select
+                  className="filter-select"
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                >
+                  <option value="">Select Year</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+
+              {filteredChecklist && filteredChecklist.length > 0 ? (
+                <table className="checklist-table">
+                  <thead>
+                    <tr>
+                      <th>Course Code</th>
+                      <th>Instructor</th>
+                      <th>Course Title</th>
+                      <th>Credit Unit (Lec)</th>
+                      <th>Credit Unit (Lab)</th>
+                      <th>Contact Hours (Lec)</th>
+                      <th>Contact Hours (Lab)</th>
+                      <th>Pre-requisite</th>
+                      <th>Semester Taken</th>
+                      <th>Year Taken</th>
+                      <th>Final Grade</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredChecklist.map((item) => (
+                      <tr key={item.checklist_id}>
+                        <td>{item.course_code}</td>
+                        <td>
+                          {item.grades.length > 0 && item.grades[0].professor
+                            ? item.grades[0].professor.prof_name
+                            : "N/A"}
+                        </td>
+                        <td>
+                          {item.curriculum
+                            ? item.curriculum.course_title
+                            : "N/A"}
+                        </td>
+                        <td>
+                          {item.curriculum
+                            ? item.curriculum.credit_unit_lec
+                            : "N/A"}
+                        </td>
+                        <td>
+                          {item.curriculum
+                            ? item.curriculum.credit_unit_lab
+                            : "N/A"}
+                        </td>
+                        <td>
+                          {item.curriculum
+                            ? item.curriculum.contact_hours_lec
+                            : "N/A"}
+                        </td>
+                        <td>
+                          {item.curriculum
+                            ? item.curriculum.contact_hours_lab
+                            : "N/A"}
+                        </td>
+                        <td>
+                          {item.curriculum
+                            ? item.curriculum.prerequisite
+                            : "N/A"}
+                        </td>
+                        <td>{item.semester}</td>
+                        <td>{item.year}</td>
+                        <td>
+                          {item.grades.length > 0
+                            ? item.grades[0].final_grade
+                            : "N/A"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No checklist available.</p>
+              )}
             </div>
 
             <div className="modal-footer">

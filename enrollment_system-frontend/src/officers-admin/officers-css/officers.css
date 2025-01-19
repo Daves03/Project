@@ -1,62 +1,62 @@
 .officers-container {
-    display: flex;
-    height: 100vh;
+  display: flex;
+  height: 100vh;
 }
 
 .sidebar-officers {
-    width: 250px; 
-    background-color: #f4f4f4; 
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-officers h2 {
-    margin-bottom: 20px; 
-    font-size: 24px;
+  margin-bottom: 20px;
+  font-size: 24px;
 }
 
 .nav-links-officers {
-    list-style-type: none; 
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 .nav-links-officers li {
-    display: flex;
-    align-items: center; 
-    padding: 10px;
-    cursor: pointer; 
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
 }
 
 .nav-icon-officers {
-    width: 20px; 
-    height: 20px;
-    margin-right: 10px; 
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 }
 
 .nav-links-officers {
-    list-style-type: none; 
-    padding: 0; 
+  list-style-type: none;
+  padding: 0;
 }
 
 .nav-links-officers li {
-    padding: 10px 15px; 
-    cursor: pointer;
-    transition: background-color 0.3s; 
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .nav-links-officers li:hover {
-    background-color: #ddd; 
+  background-color: #ddd;
 }
 
 .nav-links-officers li.active {
-    background-color: #c7c7c7; 
-    font-weight: bold;
-    border-radius: 4px;
+  background-color: #c7c7c7;
+  font-weight: bold;
+  border-radius: 4px;
 }
 
 .main-content {
-    flex-grow: 1;
-    padding: 20px; 
-    background-color: #ffffff;
-    overflow-y: auto;
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #ffffff;
+  overflow-y: auto;
 }

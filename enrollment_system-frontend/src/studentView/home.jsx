@@ -8,20 +8,27 @@ import profileIcon from "../assets/user.png";
 import checklistIcon from "../assets/grade.png";
 import enrollIcon from "../assets/exam.png";
 import MainContent from "./MainContent";
+import { Modal, Button } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Home = () => {
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState("dashboard");
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
-  // Hardcoding studentId for simplicity
-  const studentId = 25; // Replace with how you retrieve your studentId
+  const handleClose = () => setShowModal(false);
+  const handleShow = (message) => {
+    setModalMessage(message);
+    setShowModal(true);
+  };
 
   const handleLogout = async () => {
-    const isConfirmed = window.confirm("Are you sure you want to log out?");
-    if (!isConfirmed) {
-      return;
-    }
+    handleShow("Are you sure you want to log out?");
+  };
+
+  const confirmLogout = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -39,11 +46,10 @@ const Home = () => {
       );
       localStorage.removeItem("token");
       localStorage.removeItem("role");
-      // alert("Logged out successfully!");
       navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
-      alert("Error logging out. Please try again.");
+      handleShow("Error logging out. Please try again.");
     }
   };
 
@@ -164,8 +170,24 @@ const Home = () => {
 
       {/* Main Content */}
       <main className="main-content">
-        <MainContent activeLink={activeLink} studentId={studentId} />
+        <MainContent activeLink={activeLink} />
       </main>
+
+      {/* Modal */}
+      <Modal show={showModal} onHide={handleClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Logout Confirmation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{modalMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={confirmLogout}>
+            Logout
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

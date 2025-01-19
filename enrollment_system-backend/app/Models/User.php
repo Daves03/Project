@@ -60,5 +60,9 @@ class User extends Authenticatable
 // app/Models/User.php
 public function studentDetails() { return $this->hasOne(StudentDetails::class); }
 
-    
+public function studentSubjects()
+{
+    return $this->hasOne(StudentSubjects::class);
+}
+
 }

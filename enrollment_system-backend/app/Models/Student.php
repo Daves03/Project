@@ -11,7 +11,7 @@ class Student extends Model
 
     protected $fillable = [
         'email', 'student_number', 'last_name', 'first_name', 'middle_name','program', 'year_level', 'semester', 'student_status',
-        'sex', 'contact_number', 'facebook_link', 'birthdate', 'status', 'faculty_status','admin_status', 'user_id'
+        'sex', 'contact_number', 'facebook_link', 'birthdate', 'status', 'faculty_status','admin_status', 'user_id', 'last_enrollment_at',
     ];
 
     // Relationship to Guardian
@@ -42,5 +42,14 @@ class Student extends Model
     return $this->belongsTo(User::class);
 }
 
-    
+public function checklist() { return $this->hasMany(ChecklistTable::class, 'usersId', 'user_id'); } 
+
+// app/Models/Student.php
+// app/Models/Student.php
+public function details()
+{
+    return $this->belongsTo(StudentDetails::class, 'user_id', 'user_id');
+}
+
+
 }

@@ -9,6 +9,22 @@ use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\StudentSocFeeController;
 use App\Http\Controllers\StudentDetailsController; 
+use App\Http\Controllers\StudentCreationController;
+use App\Http\Controllers\ChecklistController;
+use App\Http\Controllers\StudentChecklistController;
+
+Route::get('/students/{userId}/checklist', [StudentChecklistController::class, 'show']);
+Route::get('/students/on_process_COR', [StudentController::class, 'getStudentsOnProcessCOR']);
+Route::post('/students/{id}/assign-subjects', [StudentController::class, 'assignSubjects']); 
+Route::post('/students/{id}/update-status', [StudentController::class, 'updateStudentStatus']);
+Route::get('/students/{user_id}/cor', [StudentController::class, 'getCOR']);
+Route::post('/students/{studentId}/update-section', [StudentController::class, 'updateSection']);
+
+
+
+Route::middleware('auth:sanctum')->get('/checklist', [ChecklistController::class, 'index']);
+
+Route::middleware('auth:api')->post('/create-student', [StudentCreationController::class, 'createStudent']);
 
 
 Route::middleware('auth:sanctum')->get('/student-details', [StudentDetailsController::class, 'getStudentDetails']);
@@ -89,5 +105,8 @@ Route::post('/enrollments/{id}/admin-approve', [StudentController::class, 'appro
 Route::post('/enrollments/{id}/admin-decline', [StudentController::class,'declineByAdmin']);
 
 Route::get('/approved-enrollments', [StudentController::class, 'getApprovedEnrollments']);
+
+Route::middleware('auth:api')->get('/student-status', [StudentController::class, 'getStudentStatus']);
+
 
 

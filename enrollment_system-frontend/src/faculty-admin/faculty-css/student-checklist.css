@@ -1,86 +1,114 @@
 .student-checklist-container {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    width: 100%;
-    padding-left: 140px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  width: auto;
+  padding-left: 140px;
 }
 
 .title-faculty {
-    width: 95%;
-    display: flex;
-    color: #333;
-    justify-content: center;
-    height: 40px;
-    background-color: #e2e2e2;
-    text-align: center;
-    margin-bottom: 10px;
-    align-items: center;
-    border-radius: 4px 4px 0px 0px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 25px;
+  width: 95%;
+  display: flex;
+  color: #333;
+  justify-content: center;
+  height: 40px;
+  background-color: #e2e2e2;
+  text-align: center;
+  margin-bottom: 10px;
+  align-items: center;
+  border-radius: 4px 4px 0px 0px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 25px;
 }
 
 .top-controls-faculty {
-    display: flex;
-    align-items: center;
-    gap: 47px;
-    margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 47px;
+  margin-bottom: 20px;
 }
 
 .search-bar-faculty {
-    padding: 8px;
-    width: 250px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  padding: 8px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.actions-cell {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .add-btn-faculty {
-    padding: 8px 12px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.add-btn-faculty:hover {
+  background-color: #0056b3;
+}
+.action-btn-faculty {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.action-btn-faculty:hover {
+  background-color: #0056b3;
 }
 
-.add-btn-faculty:hover {
-    background-color: #0056b3;
+.view-btn-faculty {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.view-btn-faculty:hover {
+  background-color: #0056b3;
 }
 
 .filter-faculty {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  max-width: 400px;
 }
 
 .table-container-faculty {
-    width: 95%; 
-    height: 100%; 
-    overflow: auto; 
-    border: 1px solid #ddd; 
+  width: auto;
+  height: 100%;
+  overflow: auto;
+  border: 1px solid #ddd;
 }
 
 .student-table-faculty {
-    width: 400px;
-    border-collapse: collapse;
-    font-size: 14px;
-    text-align: center; 
-    vertical-align: middle;
+  width: 400px;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .student-table-faculty thead th {
-    text-align: center;
-    vertical-align: middle;
-    background-color: #f2f2f2;
-    font-weight: bold;
-    text-align: left;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #f2f2f2;
+  font-weight: bold;
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
 }
 
 .student-table-faculty tbody td {
-    text-align: center; 
-    vertical-align: middle;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
 }
