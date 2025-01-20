@@ -36,7 +36,7 @@ const Auth = () => {
     e.preventDefault();
 
     try {
-      const apiUrl = "https://backend-production-d644.up.railway.app/"; // Replace with your Railway backend URL
+      const apiUrl = "https://backend-production-d644.up.railway.app"; // Replace with your Railway backend URL
 
       // Replace POST request with GET request as per your new code
       const response = await axios.get(`${apiUrl}/api/login`, {
