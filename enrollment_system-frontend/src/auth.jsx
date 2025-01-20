@@ -13,7 +13,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
-  // 123
+  // 1234
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
