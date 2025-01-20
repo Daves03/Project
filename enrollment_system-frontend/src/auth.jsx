@@ -41,7 +41,7 @@ const Auth = () => {
       axios
         .get("backend-production-d644.up.railway.app/api/login")
         .then((response) => {
-          console.log(response.data);
+          alert(response.data);
         })
         .catch((error) => {
           console.error("Error connecting to backend:", error);
