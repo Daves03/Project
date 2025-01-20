@@ -34,10 +34,16 @@ const Auth = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/api/login", {
-        email,
-        password,
-      });
+      console.log("API URL:", process.env.REACT_APP_API_URL);
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}api/login`,
+        {
+          email,
+          password,
+        }
+      );
+
       // console.log(response.data);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);

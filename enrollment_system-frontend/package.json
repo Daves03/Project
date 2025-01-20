@@ -1,5 +1,6 @@
 {
   "name": "enrollment_system-frontend",
+  "homepage": "https://cvsu.online/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
