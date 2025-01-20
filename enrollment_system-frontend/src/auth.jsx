@@ -57,19 +57,19 @@ const Auth = () => {
         // Navigate based on the user's role
         switch (response.data.role) {
           case "student":
-            console.log("Navigating to /home");
+            alert("Navigating to /home");
             navigate("/home");
             break;
           case "admin":
-            console.log("Navigating to /admin");
+            alert("Navigating to /admin");
             navigate("/admin");
             break;
           case "officers":
-            console.log("Navigating to /officers");
+            alert("Navigating to /officers");
             navigate("/officers");
             break;
           case "faculty":
-            console.log("Navigating to /faculty");
+            alert("Navigating to /faculty");
             navigate("/faculty");
             break;
           default:
