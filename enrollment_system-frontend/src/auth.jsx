@@ -32,15 +32,11 @@ const Auth = () => {
   }, [navigate]);
 
   const handleLogin = async (email, password) => {
-    const navigate = useNavigate(); // React Router hook for navigation
-
     try {
-      console.log({ email, password });
+      console.log("Login function called");
+      const navigate = useNavigate(); // React Router hook for navigation
 
-      // Define the backend URL
       const apiUrl = "https://backend-production-d644.up.railway.app";
-
-      // Make the POST request to the backend for login
       const response = await axios.post(`${apiUrl}/api/login`, {
         email,
         password,
@@ -48,42 +44,43 @@ const Auth = () => {
 
       console.log(response.data); // Log the response from the backend
 
-      // Check if the response contains the required data
       if (response.data.token && response.data.role) {
-        // Store the token and role in localStorage
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", response.data.role);
 
-        // Navigate based on the user's role
+        // Add alerts or logs to confirm navigation
         switch (response.data.role) {
           case "student":
+            console.log("Navigating to /home");
             alert("Navigating to /home");
             navigate("/home");
             break;
           case "admin":
+            console.log("Navigating to /admin");
             alert("Navigating to /admin");
             navigate("/admin");
             break;
           case "officers":
+            console.log("Navigating to /officers");
             alert("Navigating to /officers");
             navigate("/officers");
             break;
           case "faculty":
+            console.log("Navigating to /faculty");
             alert("Navigating to /faculty");
             navigate("/faculty");
             break;
           default:
+            console.log("Unknown role.");
             alert("Unknown role. Please contact support.");
         }
       } else {
+        console.log("Invalid response data");
         alert("Invalid response from server. Please try again.");
       }
     } catch (error) {
       console.error("Error:", error);
-
-      // Display an error message
-      const message = error.response?.data?.message || "Invalid credentials!";
-      alert(message);
+      alert("There was an error with the login process.");
     }
   };
 
