@@ -13,6 +13,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
+
   // 1234
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -36,18 +37,17 @@ const Auth = () => {
     e.preventDefault();
 
     try {
-      console.log({ email, password });
-      const apiUrl = "https://backend-production-d644.up.railway.app"; // Replace with your Railway backend URL
+      // console.log({ email, password });
+      axios
+        .get("backend-production-d644.up.railway.app/api/login")
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error("Error connecting to backend:", error);
+        });
 
-      // Replace POST request with GET request as per your new code
-      const response = await axios.post(`${apiUrl}/api/login`, {
-        params: {
-          email, // Send parameters like email and password if needed
-          password,
-        },
-      });
-
-      console.log(response.data); // Logs the response from the GET request
+      // console.log(response.data); // Logs the response from the GET request
 
       // Assuming the response contains token and role
       localStorage.setItem("token", response.data.token);
