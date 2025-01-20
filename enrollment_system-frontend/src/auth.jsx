@@ -34,16 +34,25 @@ const Auth = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/login`,
-        {
-          email,
+      const apiUrl = "https://backend-production-d644.up.railway.app/"; // Replace with your Railway backend URL
+
+      // Replace POST request with GET request as per your new code
+      const response = await axios.get(`${apiUrl}/api/login`, {
+        params: {
+          email, // Send parameters like email and password if needed
           password,
-        }
-      );
+        },
+      });
+
+      console.log(response.data); // Logs the response from the GET request
+
+      // Assuming the response contains token and role
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
+
+      // Role-based navigation
       if (response.data.role === "student") {
         navigate("/home");
       } else if (response.data.role === "admin") {
@@ -54,7 +63,7 @@ const Auth = () => {
         navigate("/faculty");
       }
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Error:", error);
       const message = error.response?.data?.message || "Invalid credentials!";
       alert(message);
     }
