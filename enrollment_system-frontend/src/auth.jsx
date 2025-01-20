@@ -37,22 +37,13 @@ const Auth = () => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/login`,
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
-      if (response.data.role === "student") {
-        navigate("/home");
-      } else if (response.data.role === "admin") {
-        navigate("/admin");
-      } else if (response.data.role === "officers") {
-        navigate("/officers");
-      } else if (response.data.role === "faculty") {
-        navigate("/faculty");
-      }
+      navigate(
+        response.data.role === "student" ? "/home" : `/${response.data.role}`
+      );
     } catch (error) {
       console.error("Login failed:", error);
       const message = error.response?.data?.message || "Invalid credentials!";
