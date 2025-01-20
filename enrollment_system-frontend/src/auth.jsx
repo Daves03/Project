@@ -36,29 +36,43 @@ const Auth = () => {
 
     try {
       console.log({ email, password });
-      const apiUrl = "https://backend-production-d644.up.railway.app"; // Backend URL
 
-      // Make the POST request to the backend
+      // Define the backend URL
+      const apiUrl = "https://backend-production-d644.up.railway.app";
+
+      // Make the POST request to the backend for login
       const response = await axios.post(`${apiUrl}/api/login`, {
-        email, // Sending email and password in the body
+        email,
         password,
       });
 
-      console.log(response.data); // Logs the response from the backend
+      console.log(response.data); // Log the response from the backend
 
-      // Store the token and role in localStorage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", response.data.role);
+      // Check if the response contains the required data
+      if (response.data.token && response.data.role) {
+        // Store the token and role in localStorage
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("role", response.data.role);
 
-      // Navigate based on the user's role
-      if (response.data.role === "student") {
-        navigate("/home");
-      } else if (response.data.role === "admin") {
-        navigate("/admin");
-      } else if (response.data.role === "officers") {
-        navigate("/officers");
-      } else if (response.data.role === "faculty") {
-        navigate("/faculty");
+        // Navigate based on the user's role
+        switch (response.data.role) {
+          case "student":
+            navigate("/home");
+            break;
+          case "admin":
+            navigate("/admin");
+            break;
+          case "officers":
+            navigate("/officers");
+            break;
+          case "faculty":
+            navigate("/faculty");
+            break;
+          default:
+            alert("Unknown role. Please contact support.");
+        }
+      } else {
+        alert("Invalid response from server. Please try again.");
       }
     } catch (error) {
       console.error("Error:", error);
