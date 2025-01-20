@@ -13,7 +13,6 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
-
   // 1234
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -31,29 +30,27 @@ const Auth = () => {
       }
     }
   }, [navigate]);
-  console.log("API URL:", process.env.REACT_APP_API_URL);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async (email, password) => {
+    const navigate = useNavigate(); // React Router hook for navigation
 
     try {
-      // console.log({ email, password });
-      axios
-        .get("backend-production-d644.up.railway.app/api/login")
-        .then((response) => {
-          alert(response.data);
-        })
-        .catch((error) => {
-          console.error("Error connecting to backend:", error);
-        });
+      console.log({ email, password });
+      const apiUrl = "https://backend-production-d644.up.railway.app"; // Backend URL
 
-      // console.log(response.data); // Logs the response from the GET request
+      // Make the POST request to the backend
+      const response = await axios.post(`${apiUrl}/api/login`, {
+        email, // Sending email and password in the body
+        password,
+      });
 
-      // Assuming the response contains token and role
+      console.log(response.data); // Logs the response from the backend
+
+      // Store the token and role in localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
 
-      // Role-based navigation
+      // Navigate based on the user's role
       if (response.data.role === "student") {
         navigate("/home");
       } else if (response.data.role === "admin") {
@@ -65,6 +62,8 @@ const Auth = () => {
       }
     } catch (error) {
       console.error("Error:", error);
+
+      // Display an error message
       const message = error.response?.data?.message || "Invalid credentials!";
       alert(message);
     }
