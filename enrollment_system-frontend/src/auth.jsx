@@ -34,55 +34,50 @@ const Auth = () => {
   const handleLogin = async (email, password) => {
     try {
       console.log("Login function called");
-      const navigate = useNavigate(); // React Router hook for navigation
-
+  
       const apiUrl = "https://backend-production-d644.up.railway.app";
       const response = await axios.post(`${apiUrl}/api/login`, {
         email,
         password,
       });
-
+  
       console.log(response.data); // Log the response from the backend
-
+  
       if (response.data.token && response.data.role) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", response.data.role);
-
-        // Add alerts or logs to confirm navigation
+  
+        // Navigate based on role
         switch (response.data.role) {
           case "student":
-            console.log("Navigating to /home");
-            alert("Navigating to /home");
             navigate("/home");
             break;
           case "admin":
-            console.log("Navigating to /admin");
-            alert("Navigating to /admin");
             navigate("/admin");
             break;
           case "officers":
-            console.log("Navigating to /officers");
-            alert("Navigating to /officers");
             navigate("/officers");
             break;
           case "faculty":
-            console.log("Navigating to /faculty");
-            alert("Navigating to /faculty");
             navigate("/faculty");
             break;
           default:
-            console.log("Unknown role.");
             alert("Unknown role. Please contact support.");
         }
       } else {
-        console.log("Invalid response data");
-        alert("Invalid response from server. Please try again.");
+        alert("Login failed. Please check your credentials.");
       }
     } catch (error) {
-      console.error("Error:", error);
-      alert("There was an error with the login process.");
+      // Handle errors gracefully
+      if (error.response && error.response.status === 401) {
+        alert("Invalid email or password. Please try again.");
+      } else {
+        console.error("Error:", error);
+        alert("There was an error with the login process. Please try again later.");
+      }
     }
   };
+  
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
