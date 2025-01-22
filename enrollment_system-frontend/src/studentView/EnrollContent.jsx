@@ -3,6 +3,7 @@ import "../css/enroll-student.css";
 import axios from "axios";
 import { Modal, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import qrCodeImage from "../assets/qrcodesample.jpg";
 
 const Enroll = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -54,7 +55,7 @@ const Enroll = () => {
     const fetchEnrollmentStudentDetails = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/enrollment-student-details",
+          "https://backend.cvsu.online/api/enrollment-student-details",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -172,7 +173,7 @@ const Enroll = () => {
     console.log("Form data being submitted:", formData);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/enroll",
+        "https://backend.cvsu.online/api/enroll",
         formData,
         {
           headers: {
@@ -556,45 +557,21 @@ const Enroll = () => {
             {errors.religion && (
               <span className="error">{errors.religion}</span>
             )}
-            <label htmlFor="previousSection">
-              Previous Section<span className="required">*</span>
+            <label htmlFor="section">
+              Previous Section<span className="required"></span>
             </label>
-            <select
-              id="previousSection"
-              name="previousSection"
+            <input
+              type="text"
+              id="section"
+              name="section"
               className="inputEnroll"
               value={formData.section}
               onChange={handleChange}
-              data-readonly={isReadOnly ? "true" : "false"}
+              readOnly
               required
             >
-              <option value="">Select</option>
-              <option value="1-1">1-1</option>
-              <option value="1-2">1-2</option>
-              <option value="1-3">1-3</option>
-              <option value="1-4">1-4</option>
-              <option value="1-5">1-5</option>
-              <option value="1-6">1-6</option>
-              <option value="1-7">1-7</option>
-              <option value="2-1">2-1</option>
-              <option value="2-2">2-2</option>
-              <option value="2-3">2-3</option>
-              <option value="2-4">2-4</option>
-              <option value="2-5">2-5</option>
-              <option value="2-6">2-6</option>
-              <option value="2-7">2-7</option>
-              <option value="3-1">3-1</option>
-              <option value="3-2">3-2</option>
-              <option value="3-3">3-3</option>
-              <option value="3-4">3-4</option>
-              <option value="3-5">3-5</option>
-              <option value="3-6">3-6</option>
-              <option value="3-7">3-7</option>
-              <option value="4-3">4-3</option>
-            </select>
-            {errors.previousSection && (
-              <span className="error">{errors.previousSection}</span>
-            )}
+              </input>
+              {errors.section && <span className="error">{errors.section}</span>}
 
             <div className="buttons-next">
               <button
@@ -729,6 +706,14 @@ const Enroll = () => {
       {/* Step 4: Payment Information */}
       {currentStep === 4 && (
         <div className="enroll-step">
+          <div className="qr-image-container">
+            <img
+              src={qrCodeImage} // Use the imported image here
+              alt="QR Code"
+              className="qr-image"
+              draggable="false"
+            />
+          </div>
           <form className="enroll-form">
             <label htmlFor="mobileNumber">
               Mobile Number<span className="required">*</span>

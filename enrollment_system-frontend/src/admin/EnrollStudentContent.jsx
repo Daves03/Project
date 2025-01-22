@@ -15,7 +15,7 @@ const EnrollStudent = () => {
     const fetchApprovedEnrollments = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/approved-enrollments",
+          "https://backend.cvsu.online/api/approved-enrollments",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -34,7 +34,7 @@ const EnrollStudent = () => {
   const fetchAndGeneratePDF = async (student) => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/students/${student.user_id}/cor`,
+        `https://backend.cvsu.online/api/students/${student.user_id}/cor`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

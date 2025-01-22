@@ -10,7 +10,7 @@ const Enrollment = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/students");
+        const response = await axios.get("https://backend.cvsu.online/api/students");
         console.log("API Response:", response.data);
         setStudents(response.data);
       } catch (error) {
@@ -34,7 +34,7 @@ const Enrollment = () => {
   const approveEnrollment = async (studentId) => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/enrollments/${studentId}/approve`
+        `https://backend.cvsu.online/api/enrollments/${studentId}/approve`
       );
 
       if (response.status === 200) {
@@ -54,7 +54,7 @@ const Enrollment = () => {
   const declinePayment = async (studentId) => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/students/${studentId}/decline-payment`,
+        `https://backend.cvsu.online/api/students/${studentId}/decline-payment`,
         {
           message: "Your payment was declined due to invalid details.",
         }

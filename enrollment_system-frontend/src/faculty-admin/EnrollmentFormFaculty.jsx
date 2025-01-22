@@ -16,7 +16,7 @@ const Enrollment = () => {
     const fetchStudents = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/enrollments?status=officer_approved"
+          "https://backend.cvsu.online/api/enrollments?status=officer_approved"
         );
         console.log("Fetched students:", response.data); // Add this line for debugging
         setStudents(response.data);
@@ -33,7 +33,7 @@ const Enrollment = () => {
     if (student.user_id) {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/students/${student.user_id}/checklist`
+          `https://backend.cvsu.online/api/students/${student.user_id}/checklist`
         );
         setChecklist(response.data.checklist);
         setFilteredChecklist(response.data.checklist); // Set initial filtered checklist
@@ -64,7 +64,7 @@ const Enrollment = () => {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/enrollments/${studentId}/update-status`,
+        `https://backend.cvsu.online/api/enrollments/${studentId}/update-status`,
         { student_status: status },
         {
           headers: {
@@ -86,7 +86,7 @@ const Enrollment = () => {
   const acceptEnrollment = async (studentId) => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/enrollments/${studentId}/faculty-approve`,
+        `https://backend.cvsu.online/api/enrollments/${studentId}/faculty-approve`,
         {
           status: enrollmentStatus[studentId] || "Regular",
         }
@@ -109,7 +109,7 @@ const Enrollment = () => {
   const declineEnrollment = async (studentId) => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/enrollments/${studentId}/faculty-decline`
+        `https://backend.cvsu.online/api/enrollments/${studentId}/faculty-decline`
       );
 
       if (response.status === 200) {

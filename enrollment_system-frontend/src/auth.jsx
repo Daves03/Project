@@ -15,6 +15,8 @@ const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
 
@@ -31,21 +33,19 @@ const Auth = () => {
     }
   }, [navigate]);
 
+  const API_URL = "https://backend.cvsu.online/";
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}api/login`,
-        {
-          email,
-          password,
-        }
-      );
-
-      // console.log(response.data);
+      const response = await axios.post(`${API_URL}api/login`, {
+        email,
+        password,
+      });
+  
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
-      // alert("Logged in successfully!");
+  
       if (response.data.role === "student") {
         navigate("/home");
       } else if (response.data.role === "admin") {
@@ -65,7 +65,7 @@ const Auth = () => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/api/send-message", {
+      await axios.post("https://backend.cvsu.online/send-message", {
         email,
         message,
       });

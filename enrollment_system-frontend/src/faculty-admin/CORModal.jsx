@@ -23,7 +23,7 @@ const CORModal = ({ student, onClose, onSubmit }) => {
     const fetchSubjects = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/curriculum"
+          "https://backend.cvsu.online/api/curriculum"
         );
         setAvailableSubjects(response.data);
         setFilteredSubjects(response.data);
@@ -86,7 +86,7 @@ const CORModal = ({ student, onClose, onSubmit }) => {
   const handleSubmit = async () => {
     try {
       await axios.post(
-        `http://127.0.0.1:8000/api/students/${student.id}/assign-subjects`,
+        `https://backend.cvsu.online/api/students/${student.id}/assign-subjects`,
         { subjects: selectedSubjects.map((subject) => subject.course_code) },
         {
           headers: {
@@ -96,7 +96,7 @@ const CORModal = ({ student, onClose, onSubmit }) => {
       );
 
       await axios.post(
-        `http://127.0.0.1:8000/api/students/${student.id}/update-status`,
+        `https://backend.cvsu.online/api/students/${student.id}/update-status`,
         {
           student_status: studentStatus,
           year_level: studentYear,

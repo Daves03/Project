@@ -100,7 +100,7 @@ select[data-readonly="true"] {
   color: white;
 }
 
-.qr-container {
+.qr-image-container {
   text-align: center;
   margin-bottom: 20px;
 }

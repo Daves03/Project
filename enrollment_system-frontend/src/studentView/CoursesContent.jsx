@@ -19,7 +19,7 @@ const Courses = () => {
 
         console.log("Token:", token); // Debugging log
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/checklist",
+          "https://backend.cvsu.online/api/checklist",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -60,7 +60,7 @@ const Courses = () => {
     <div className="checklist-container">
       <div className="scrollable-table-container">
         <div className="filter-section">
-          <input type="text" className="search-bar" placeholder="Search..." />
+          {/* <input type="text" className="search-bar" placeholder="Search..." /> */}
           <select
             className="filter-dropdown"
             onChange={(e) => setYearFilter(e.target.value)}

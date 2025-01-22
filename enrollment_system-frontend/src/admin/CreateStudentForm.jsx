@@ -44,7 +44,7 @@ const CreateStudentForm = () => {
     try {
       const token = localStorage.getItem("token"); // Get the token from localStorage
       const response = await axios.post(
-        "http://localhost:8000/api/create-student",
+        "https://backend.cvsu.online/api/create-student",
         formData,
         {
           headers: {

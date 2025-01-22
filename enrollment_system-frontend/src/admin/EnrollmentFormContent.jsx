@@ -15,7 +15,7 @@ const EnrollmentFormContent = () => {
     const fetchStudents = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/admin/enrollments"
+          "https://backend.cvsu.online/api/admin/enrollments"
         );
         setStudents(response.data);
       } catch (error) {
@@ -39,7 +39,7 @@ const EnrollmentFormContent = () => {
     // Fetch COR data for the selected student
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/students/${student.user_id}/cor`,
+        `https://backend.cvsu.online/api/students/${student.user_id}/cor`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -55,7 +55,7 @@ const EnrollmentFormContent = () => {
     // Fetch Checklist data for the selected student
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/students/${student.user_id}/checklist`,
+        `https://backend.cvsu.online/api/students/${student.user_id}/checklist`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -82,7 +82,7 @@ const EnrollmentFormContent = () => {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/students/${selectedStudent.user_id}/update-section`,
+        `https://backend.cvsu.online/api/students/${selectedStudent.user_id}/update-section`,
         { section },
         {
           headers: {
@@ -109,7 +109,7 @@ const EnrollmentFormContent = () => {
   const acceptEnrollment = async (studentId) => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/enrollments/${studentId}/admin-approve`,
+        `https://backend.cvsu.online/api/enrollments/${studentId}/admin-approve`,
         {},
         {
           headers: {
@@ -135,7 +135,7 @@ const EnrollmentFormContent = () => {
   const declineEnrollment = async (studentId) => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/enrollments/${studentId}/admin-decline`,
+        `https://backend.cvsu.online/api/enrollments/${studentId}/admin-decline`,
         {},
         {
           headers: {

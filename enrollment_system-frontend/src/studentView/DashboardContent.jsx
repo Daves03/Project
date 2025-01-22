@@ -19,7 +19,7 @@ const Schedule = () => {
     const fetchNotifications = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/notifications"
+          "https://backend.cvsu.online/api/notifications"
         );
         // console.log("Fetched Notifications:", response.data);
 
@@ -60,7 +60,7 @@ const Schedule = () => {
   const removeNotification = async (notificationId) => {
     try {
       await axios.delete(
-        `http://127.0.0.1:8000/api/notifications/${notificationId}`
+        `https://backend.cvsu.online/api/notifications/${notificationId}`
       );
       setNotifications((prevNotifications) =>
         prevNotifications.filter(

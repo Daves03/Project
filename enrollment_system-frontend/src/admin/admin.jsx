@@ -46,7 +46,7 @@ const AdminPage = () => {
         throw new Error("No token found");
       }
       await axios.post(
-        "http://localhost:8000/api/logout",
+        "https://backend.cvsu.online/api/logout",
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

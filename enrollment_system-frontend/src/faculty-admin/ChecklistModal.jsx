@@ -12,7 +12,7 @@ const ChecklistModal = ({ student, onClose }) => {
     const fetchChecklist = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/students/${student.user_id}/checklist`,
+          `https://backend.cvsu.online/api/students/${student.user_id}/checklist`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

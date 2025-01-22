@@ -25,7 +25,7 @@ const EnrollStudent = () => {
     const fetchStudents = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/student-soc-fees"
+          "https://backend.cvsu.online/api/student-soc-fees"
         );
 
         setStudents(response.data);
@@ -74,12 +74,12 @@ const EnrollStudent = () => {
       console.log("Saving data:", studentData);
       if (editableData.id) {
         await axios.put(
-          `http://127.0.0.1:8000/api/student-soc-fees/${editableData.id}`,
+          `https://backend.cvsu.online/api/student-soc-fees/${editableData.id}`,
           studentData
         );
       } else {
         await axios.post(
-          "http://127.0.0.1:8000/api/student-soc-fees",
+          "https://backend.cvsu.online/api/student-soc-fees",
           studentData
         );
       }
@@ -100,7 +100,7 @@ const EnrollStudent = () => {
         },
       });
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/student-soc-fees"
+        "https://backend.cvsu.online/student-soc-fees"
       );
       setStudents(response.data);
     } catch (error) {

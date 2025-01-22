@@ -18,7 +18,7 @@ const EnrollStudent = () => {
     const fetchStudents = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/students/on_process_COR"
+          "https://backend.cvsu.online/api/students/on_process_COR"
         );
         setStudents(response.data);
       } catch (error) {
@@ -67,7 +67,7 @@ const EnrollStudent = () => {
   const handleCORSubmit = async (subjects) => {
     try {
       await axios.post(
-        `http://127.0.0.1:8000/api/students/${selectedStudent.id}/assign-subjects`,
+        `https://backend.cvsu.online/api/students/${selectedStudent.id}/assign-subjects`,
         { subjects: subjects.map((subject) => subject.course_code) },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

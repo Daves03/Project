@@ -36,7 +36,7 @@ const Home = () => {
       }
 
       await axios.post(
-        "http://localhost:8000/api/logout",
+        "https://backend.cvsu.online/api/logout",
         {},
         {
           headers: {
