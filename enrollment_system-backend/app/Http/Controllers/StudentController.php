@@ -38,33 +38,33 @@ class StudentController extends Controller
                 return response()->json(['error' => 'You must wait ' . (60 - $cooldown) . ' minutes before re-enrolling.'], 429);
             }
         }
-    
+
         $validatedData = $request->validate([
-            'email' => 'required|email',
-            'studentNumber' => 'required|string',
-            'lastName' => 'required|string',
-            'firstName' => 'required|string',
-            'middleName' => 'required|string',
-            'sex' => 'required|string',
-            'contactNumber' => 'required|string',
-            'birthdate' => 'required|date',
-            'guardianName' => 'required|string',
-            'guardianPhone' => 'required|string',
-            'religion' => 'required|string',
-            'houseNumber' => 'required|string',
-            'street' => 'required|string',
-            'subdivision' => 'required|string',
-            'barangay' => 'required|string',
-            'municipality' => 'required|string',
-            'zipCode' => 'required|string',
-            'mobileNumber' => 'required|string',
-            'senderName' => 'required|string',
-            'referenceNumber' => 'required|string',
-            'amount' => 'required|numeric',
-            'yearLevel' => 'required|in:First Year,Second Year,Third Year,Fourth Year',
-            'semester' => 'required|string',
-            'studentstatus' => 'required|in:Regular,Irregular,transferee,freshmen',
-            'program' => 'required|string|in:Bachelor of Science in Computer Science,Bachelor of Science in Information Technology',
+            'email' => 'email',
+            'studentNumber' => 'string',
+            'lastName' => 'string',
+            'firstName' => 'string',
+            'middleName' => 'string',
+            'sex' => 'string',
+            'contactNumber' => 'string',
+            'birthdate' => 'date',
+            'guardianName' => 'string',
+            'guardianPhone' => 'string',
+            'religion' => 'string',
+            'houseNumber' => 'string',
+            'street' => 'string',
+            'subdivision' => 'string',
+            'barangay' => 'string',
+            'municipality' => 'string',
+            'zipCode' => 'string',
+            'mobileNumber' => 'string',
+            'senderName' => 'string',
+            'referenceNumber' => 'string',
+            'amount' => 'numeric',
+            'yearLevel' => 'in:First Year,Second Year,Third Year,Fourth Year',
+            'semester' => 'string',
+            'studentstatus' => 'in:Regular,Irregular,transferee,freshmen',
+            'program' => 'string|in:Bachelor of Science in Computer Science,Bachelor of Science in Information Technology',
         ]);
     
         $validatedData['student_number'] = $validatedData['studentNumber'];
@@ -203,15 +203,34 @@ class StudentController extends Controller
             'notification' => $notification,
         ]);
     }
-
+    //new code function.......
     public function approveByOfficer($id)
     {
+        // Find the student by ID
         $enrollment = Student::findOrFail($id);
-        $enrollment->status = 'officer_approved'; 
-        
-        $enrollment->save();  
 
-        return response()->json(['message' => 'Enrollment approved and forwarded to faculty.']);
+        // Update the student's status to 'officer_approved'
+        $enrollment->status = 'officer_approved';
+        $enrollment->save();  // Save the updated status
+
+        // Save the student's fee information in the students_soc_fees table
+        $socFee = new SocFee([
+            'student_number' => $enrollment->studentNumber,
+            'student_name' => $enrollment->first_name . ' ' . $enrollment->last_name,
+            'year_level' => $enrollment->year_level,
+            'semester' => $enrollment->semester,
+            'program' => $enrollment->program,
+            'soc_fee_first_year' => 'not paid',   // Default value
+            'soc_fee_second_year' => 'not paid',  // Default value
+            'soc_fee_third_year' => 'not paid',   // Default value
+            'soc_fee_fourth_year' => 'not paid',  // Default value
+        ]);
+
+        // Save the fee record to the students_soc_fees table
+        $socFee->save();
+
+        // Return a success response
+        return response()->json(['message' => 'Enrollment approved and forwarded to faculty, and fee information saved.']);
     }
 
     public function getFacultyEnrollments()

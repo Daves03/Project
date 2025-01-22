@@ -343,7 +343,6 @@ const CreateStudentForm = () => {
 
         <div className="actions full-width">
           <button type="submit">Create</button>
-          <button type="button">Create & Create Another</button>
           <button type="button" onClick={handleClose}>
             Cancel
           </button>

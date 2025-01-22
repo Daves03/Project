@@ -138,9 +138,6 @@ const EnrollStudent = () => {
           <option value="Bachelor of Science in Computer Science">
             Bachelor of Science in Computer Science
           </option>
-          <option value="Bachelor of Science in Electronics and Communications Engineering">
-            Bachelor of Science in Electronics and Communications Engineering
-          </option>
           <option value="Bachelor of Science in Information Technology">
             Bachelor of Science in Information Technology
           </option>

@@ -10,7 +10,29 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const EnrollStudent = () => {
   const [approvedEnrollments, setApprovedEnrollments] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sectionFilter, setSectionFilter] = useState("");
+  const [yearLevelFilter, setYearLevelFilter] = useState("");
+  const [courseFilter, setCourseFilter] = useState("");
 
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get(
+          "https://backend.cvsu.online/api/students/on_process_COR"
+        );
+        setStudents(response.data);
+      } catch (error) {
+        console.error(
+          "Error fetching students with on process COR status:",
+          error
+        );
+      }
+    };
+
+    fetchStudents();
+  }, []);
   useEffect(() => {
     const fetchApprovedEnrollments = async () => {
       try {
@@ -544,29 +566,95 @@ const EnrollStudent = () => {
     const pdfUrl = URL.createObjectURL(pdfBlob);
     window.open(pdfUrl, "_blank");
   };
+  const filteredStudents = students.filter((student) => {
+    return (
+      (searchTerm === "" ||
+        student.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.student_number.includes(searchTerm)) &&
+      (sectionFilter === "" || student.details.section === sectionFilter) &&
+      (yearLevelFilter === "" || student.details.year_level === yearLevelFilter) &&
+      (courseFilter === "" || student.details.course === courseFilter)
+    );
+  });
+
+  const handleSearchChange = (event) => setSearchTerm(event.target.value);
+  const handleSectionChange = (event) => setSectionFilter(event.target.value);
+  const handleYearLevelChange = (event) => setYearLevelFilter(event.target.value);
+  const handleCourseChange = (event) => setCourseFilter(event.target.value);
 
   return (
     <div className="enroll-student-container">
       <h1 className="title">Enroll Student</h1>
 
       <div className="top-controls">
-        <input
+      <input
           type="text"
           placeholder="Search by name or student number"
-          className="search-bar"
+          className="search-bar-faculty"
+          value={searchTerm}
+          onChange={handleSearchChange}
         />
 
-        <select className="filter">
+        <select
+          className="filter-faculty"
+          value={sectionFilter}
+          onChange={handleSectionChange}
+        >
           <option value="">Filter by Section</option>
-          <option value="A">BSCS 3-1</option>
+          <option value="1-1">1-1</option>
+          <option value="1-2">1-2</option>
+          <option value="1-3">1-3</option>
+          <option value="1-4">1-4</option>
+          <option value="1-5">1-5</option>
+          <option value="1-6">1-6</option>
+          <option value="1-7">1-7</option>
+          <option value="2-1">2-1</option>
+          <option value="2-2">2-2</option>
+          <option value="2-3">2-3</option>
+          <option value="2-4">2-4</option>
+          <option value="2-5">2-5</option>
+          <option value="2-6">2-6</option>
+          <option value="2-7">2-7</option>
+          <option value="3-1">3-1</option>
+          <option value="3-2">3-2</option>
+          <option value="3-3">3-3</option>
+          <option value="3-4">3-4</option>
+          <option value="3-5">3-5</option>
+          <option value="3-6">3-6</option>
+          <option value="3-7">3-7</option>
+          <option value="4-1">4-1</option>
+          <option value="4-2">4-2</option>
+          <option value="4-3">4-3</option>
+          <option value="4-4">4-4</option>
+          <option value="4-5">4-5</option>
+          <option value="4-6">4-6</option>
+          <option value="4-7">4-7</option>
         </select>
 
-        <select className="filter">
+        <select
+          className="filter-faculty"
+          value={yearLevelFilter}
+          onChange={handleYearLevelChange}
+        >
           <option value="">Filter by Year Level</option>
-          <option value="1">1st Year</option>
-          <option value="2">2nd Year</option>
-          <option value="3">3rd Year</option>
-          <option value="4">4th Year</option>
+          <option value="First Year">First Year</option>
+          <option value="Second Year">Second Year</option>
+          <option value="Third Year">Third Year</option>
+          <option value="Fourth Year">Fourth Year</option>
+        </select>
+
+        <select
+          className="filter-faculty"
+          value={courseFilter}
+          onChange={handleCourseChange}
+        >
+          <option value="">Filter by Course</option>
+          <option value="Bachelor of Science in Computer Science">
+            Bachelor of Science in Computer Science
+          </option>
+          <option value="Bachelor of Science in Information Technology">
+            Bachelor of Science in Information Technology
+          </option>
         </select>
       </div>
 
@@ -590,21 +678,21 @@ const EnrollStudent = () => {
             </tr>
           </thead>
           <tbody>
-            {approvedEnrollments.map((student) => (
+          {(approvedEnrollments.concat(filteredStudents || []))
+            .filter((student) => student?.details && student.details.first_name && student.details.last_name)
+            .map((student) => (
               <tr key={student.id}>
-                <td>
-                  {student.first_name} {student.last_name}
-                </td>
-                <td>{student.student_number}</td>
-                <td>{student.student_status}</td>
-                <td>{student.year_level}</td>
-                <td>{student.semester}</td>
-                <td>{student.section}</td>
-                <td>{student.course}</td>
-                <td>{student.address}</td>
-                <td>{student.email}</td>
-                <td>{student.guardian_name}</td>
-                <td>{student.guardian_phone}</td>
+                <td>{student.details.first_name} {student.details.last_name}</td>
+                <td>{student.details.student_number}</td>
+                <td>{student.details.status}</td>
+                <td>{student.details.year_level}</td>
+                <td>{student.details.semester}</td>
+                <td>{student.details.section}</td>
+                <td>{student.details.course}</td>
+                <td>{student.details.address}</td>
+                <td>{student.details.email}</td>
+                <td>{student.details.guardian_name}</td>
+                <td>{student.details.guardian_phone}</td>
                 <td>
                   <button onClick={() => fetchAndGeneratePDF(student)}>
                     Download COR

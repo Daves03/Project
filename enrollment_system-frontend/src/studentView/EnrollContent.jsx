@@ -323,7 +323,6 @@ const Enroll = () => {
               className="inputEnroll"
               value={formData.program}
               onChange={handleChange}
-              data-readonly={isReadOnly ? "true" : "false"}
               required
             >
               <option value="">Select Program</option>
@@ -437,6 +436,8 @@ const Enroll = () => {
             )}
             {formData.studentstatus === "transferee" && (
               <div className="transferee-requirements">
+                
+
                 <p>
                   <strong>Requirements:</strong>
                   <br />
@@ -461,6 +462,7 @@ const Enroll = () => {
             )}
             {formData.studentstatus === "freshmen" && (
               <div className="freshmen-requirements">
+                
                 <p>
                   <strong>Requirements:</strong>
                   <br />
@@ -560,6 +562,7 @@ const Enroll = () => {
             <label htmlFor="section">
               Previous Section<span className="required"></span>
             </label>
+            <p>(type "not enrolled" if transferee or freshman)</p>
             <input
               type="text"
               id="section"
@@ -567,7 +570,6 @@ const Enroll = () => {
               className="inputEnroll"
               value={formData.section}
               onChange={handleChange}
-              readOnly
               required
             >
               </input>

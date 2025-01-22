@@ -45,7 +45,7 @@ const Auth = () => {
   
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
-  
+      localStorage.setItem("user_id", response.data.user_id);
       if (response.data.role === "student") {
         navigate("/home");
       } else if (response.data.role === "admin") {
@@ -102,29 +102,23 @@ const Auth = () => {
         {isForgotPassword ? (
           <form onSubmit={handleForgotPassword}>
             <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="New Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-            <button className="loginButtons" type="submit">
-              Confirm
-            </button>
+                  type="email"
+                  placeholder="Recipient's Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <textarea
+                  className="text-area-box"
+                  placeholder="Message Description"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                />
+
+                <button className="loginButtons" type="submit">
+                  Send Message
+                </button>
             <p>
               Already have an account?{" "}
               <button

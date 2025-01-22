@@ -109,7 +109,8 @@ const Enrollment = () => {
   const declineEnrollment = async (studentId) => {
     try {
       const response = await axios.post(
-        `https://backend.cvsu.online/api/enrollments/${studentId}/faculty-decline`
+        `https://backend.cvsu.online/api/enrollments/${studentId}/faculty-decline`,
+        { message: "Your enrollment has been declined by faculty." } 
       );
 
       if (response.status === 200) {
